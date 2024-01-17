@@ -128,6 +128,8 @@ export class AuthService {
     return {
       ok: true,
       loggedInUser: verifyUser,
+      accessToken: jwtAccessToken,
+      refreshToken: jwtRefreshToken,
     };
   }
 

@@ -21,4 +21,6 @@ export class LoginInput {
 
 export class LoginOutput extends CoreOutput {
   loggedInUser?: Pick<UserEntity, 'id' | 'socialProvider' | 'email' | 'nickname' | 'profileImg' | 'role'>;
+  accessToken?: string;
+  refreshToken?: string;
 }
