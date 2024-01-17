@@ -20,5 +20,5 @@ export class LoginInput {
 }
 
 export class LoginOutput extends CoreOutput {
-  createdUser?: Pick<UserEntity, 'id' | 'socialProvider' | 'email' | 'nickname' | 'profileImg'>;
+  loggedInUser?: Pick<UserEntity, 'id' | 'socialProvider' | 'email' | 'nickname' | 'profileImg' | 'role'>;
 }

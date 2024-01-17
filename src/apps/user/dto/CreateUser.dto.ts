@@ -55,5 +55,5 @@ export class CreateUserInput {
 }
 
 export class CreateUserOutput extends CoreOutput {
-  createdUser?: Pick<UserEntity, 'id' | 'socialProvider' | 'email' | 'nickname' | 'profileImg'>;
+  createdUser?: Pick<UserEntity, 'id' | 'socialProvider' | 'email' | 'nickname' | 'profileImg' | 'role'>;
 }

@@ -97,6 +97,7 @@ export class UserService {
         email: createdUser.email,
         nickname: createdUser.nickname,
         profileImg: createdUser.profileImg,
+        role: createdUser.role,
       },
     };
   }

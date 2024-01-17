@@ -94,7 +94,7 @@ export class AuthService {
       );
     }
 
-    let verifyUser: Pick<UserEntity, 'id' | 'socialProvider' | 'email' | 'nickname' | 'profileImg'> = findUser;
+    let verifyUser: Pick<UserEntity, 'id' | 'socialProvider' | 'email' | 'nickname' | 'profileImg' | 'role'> = findUser;
     if (!findUser) {
       const { createdUser } = await this.userService.createUser({
         socialProvider,
@@ -127,6 +127,7 @@ export class AuthService {
 
     return {
       ok: true,
+      loggedInUser: verifyUser,
     };
   }
 
