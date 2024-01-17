@@ -11,14 +11,14 @@ import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 import { UserTokenEntity } from '@src/libs/entity/domain/user/UserToken.entity';
 import infoLog from '@src/libs/logger/InfoLog';
 
+import { LoginInput, LoginOutput } from '@src/apps/auth/dto/Login.dto';
+import { LogoutOutput } from '@src/apps/auth/dto/Logout.dto';
 import { RefreshTokenInput, RefreshTokenOutput } from '@src/apps/auth/dto/RefreshToken.dto';
 import getDiscordUserProfile from '@src/apps/auth/external-request/GetDiscordUserProfile';
 import getGoogleUserProfile from '@src/apps/auth/external-request/GetGoogleUserProfile';
 import getKakaoUserProfile from '@src/apps/auth/external-request/GetKakaoUserProfile';
 import getNaverUserProfile from '@src/apps/auth/external-request/GetNaverUserProfile';
 import { JwtService } from '@src/apps/jwt/Jwt.service';
-import { LoginInput, LoginOutput } from '@src/apps/user/dto/Login.dto';
-import { LogoutOutput } from '@src/apps/user/dto/Logout.dto';
 import { UserService } from '@src/apps/user/User.service';
 import { UserQueryRepository } from '@src/apps/user/UserQueryRepository';
 

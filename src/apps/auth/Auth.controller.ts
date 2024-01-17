@@ -6,9 +6,9 @@ import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 import { AuthService } from '@src/apps/auth/Auth.service';
 import { AuthUser } from '@src/apps/auth/decorators/AuthUser.decorator';
 import { RoleGuard } from '@src/apps/auth/decorators/RoleGuard.decorator';
+import { LoginInput, LoginOutput } from '@src/apps/auth/dto/Login.dto';
+import { LogoutOutput } from '@src/apps/auth/dto/Logout.dto';
 import { RefreshTokenInput, RefreshTokenOutput } from '@src/apps/auth/dto/RefreshToken.dto';
-import { LoginInput, LoginOutput } from '@src/apps/user/dto/Login.dto';
-import { LogoutOutput } from '@src/apps/user/dto/Logout.dto';
 
 @Controller('v1/auth')
 export class AuthController {
