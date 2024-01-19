@@ -8,4 +8,6 @@ export class RefreshTokenInput {
   refreshToken: string;
 }
 
-export class RefreshTokenOutput extends CoreOutput {}
+export class RefreshTokenOutput extends CoreOutput {
+  accessToken?: string;
+}

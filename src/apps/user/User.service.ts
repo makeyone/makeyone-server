@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
-import { UserTokenEntity } from '@src/libs/entity/domain/user/UserToken.entity';
 
 import { CreateUserInput, CreateUserOutput } from '@src/apps/user/dto/CreateUser.dto';
 import { GetMeOutput } from '@src/apps/user/dto/GetMe.dto';
@@ -17,7 +16,6 @@ export class UserService {
     private dataSource: DataSource,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(UserTokenEntity)
     private readonly userQueryRepository: UserQueryRepository,
   ) {}
 

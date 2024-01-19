@@ -1,4 +1,4 @@
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 
 import { JWT_CONFIG_OPTIONS } from '@src/apps/jwt/Jwt.constants';
@@ -25,11 +25,11 @@ export class JwtService {
       return jwt.verify(token, this.options.accessTokenSecretKey);
     } catch (err) {
       if (err.message === 'invalid token') {
-        throw new ForbiddenException('INVALID_TOKEN');
+        throw new UnauthorizedException('INVALID_JWT_ACCESS_TOKEN');
       }
 
       if (err.message === 'jwt expired') {
-        throw new ForbiddenException('EXPIRED_TOKEN');
+        throw new UnauthorizedException('EXPIRED_JWT_ACCESS_TOKEN');
       }
     }
   }
@@ -39,11 +39,11 @@ export class JwtService {
       return jwt.verify(refreshToken, this.options.refreshTokenSecretKey);
     } catch (err) {
       if (err.message === 'invalid token') {
-        throw new ForbiddenException('INVALID_TOKEN');
+        throw new UnauthorizedException('EXPIRED_JWT_REFRESH_TOKEN');
       }
 
       if (err.message === 'jwt expired') {
-        throw new ForbiddenException('EXPIRED_TOKEN');
+        throw new UnauthorizedException('EXPIRED_JWT_REFRESH_TOKEN');
       }
     }
   }

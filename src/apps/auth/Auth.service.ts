@@ -122,8 +122,9 @@ export class AuthService {
       user: { id: verifyUser.id },
     });
 
-    res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-    res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+    res.setHeader('Authorization', 'Bearer ' + [jwtAccessToken, jwtRefreshToken]);
+    res.cookie('accessToken', jwtAccessToken, { secure: true, sameSite: 'none' });
+    res.cookie('refreshToken', jwtRefreshToken, { secure: true, sameSite: 'none' });
 
     return {
       ok: true,
@@ -134,15 +135,19 @@ export class AuthService {
   }
 
   async logout(res: Response, me: UserEntity): Promise<LogoutOutput> {
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
+    res.clearCookie('accessToken', { secure: true, sameSite: 'none' });
+    res.clearCookie('refreshToken', { secure: true, sameSite: 'none' });
 
-    const registeredToken = await this.userTokenRepository.findOne({ where: { user: { id: me.id } } });
-    await this.userTokenRepository.save({
-      id: registeredToken.id,
-      refreshToken: null,
-      refreshTokenExp: null,
-    });
+    if (me) {
+      const registeredToken = await this.userTokenRepository.findOne({ where: { user: { id: me.id } } });
+      if (registeredToken) {
+        await this.userTokenRepository.save({
+          id: registeredToken.id,
+          refreshToken: null,
+          refreshTokenExp: null,
+        });
+      }
+    }
 
     return {
       ok: true,
@@ -150,27 +155,37 @@ export class AuthService {
   }
 
   async refreshToken(res: Response, { refreshToken }: RefreshTokenInput): Promise<RefreshTokenOutput> {
-    const decodedRefreshToken = await this.jwtService.verifyRefreshToken(refreshToken);
-    const registeredRefreshToken = await this.userTokenRepository.findOne({ where: { refreshToken } });
+    try {
+      const decodedRefreshToken = await this.jwtService.verifyRefreshToken(refreshToken);
+      const registeredRefreshToken = await this.userTokenRepository.findOne({ where: { refreshToken } });
 
-    if (registeredRefreshToken === null) {
-      throw new NotFoundException('REGISTERED_TOKEN_NOT_FOUND');
-    }
-
-    if (typeof decodedRefreshToken === 'object' && decodedRefreshToken.hasOwnProperty('id')) {
-      const { user } = await this.userService.getUserById({ userId: decodedRefreshToken.id });
-
-      if (!user) {
-        throw new NotFoundException('USER_NOT_FOUND');
+      if (registeredRefreshToken === null) {
+        throw new NotFoundException('REGISTERED_TOKEN_NOT_FOUND');
       }
 
-      const jwtAccessToken = await this.jwtService.signAccessToken({ id: user.id });
-      res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-    }
+      if (typeof decodedRefreshToken === 'object' && decodedRefreshToken.hasOwnProperty('id')) {
+        const { user } = await this.userService.getUserById({ userId: decodedRefreshToken.id });
 
-    return {
-      ok: true,
-    };
+        if (!user) {
+          throw new NotFoundException('USER_NOT_FOUND');
+        }
+
+        const jwtAccessToken = await this.jwtService.signAccessToken({ id: user.id });
+
+        res.setHeader('Authorization', 'Bearer ' + jwtAccessToken);
+        res.cookie('accessToken', jwtAccessToken, { secure: true, sameSite: 'none' });
+
+        return {
+          ok: true,
+          accessToken: jwtAccessToken,
+        };
+      }
+    } catch (err) {
+      if (err.response.message === 'EXPIRED_JWT_REFRESH_TOKEN') {
+        res.clearCookie('accessToken', { secure: true, sameSite: 'none' });
+        res.clearCookie('refreshToken', { secure: true, sameSite: 'none' });
+      }
+    }
   }
 
   @Cron(process.env.NODE_ENV === 'prod' ? '0 */1 * * *' : '* */1 * * *', { name: 'remove-expired-refresh-token' })
