@@ -17,8 +17,10 @@ export const compressImage = async (fileKey: string) => {
     const imageData = await awsS3GetObject(fileKey);
     const imageBuffer = await sharp(imageData.Body, { failOn: 'truncated' })
       .jpeg({
-        quality: 50,
+        quality: 80,
       })
+      .withMetadata()
+      .rotate()
       .toBuffer();
 
     const resizedConfig = {
