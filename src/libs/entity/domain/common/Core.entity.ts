@@ -1,4 +1,4 @@
-import { CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class CoreEntity {
@@ -10,4 +10,10 @@ export class CoreEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+}
+
+@Entity()
+export class IncludeSoftDeleteCoreEntity extends CoreEntity {
+  @DeleteDateColumn({ select: false })
+  deletedAt?: Date;
 }

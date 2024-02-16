@@ -10,6 +10,7 @@ import { AuthModule } from '@src/apps/auth/Auth.module';
 import { FileModule } from '@src/apps/file/File.module';
 import { JwtMiddleware } from '@src/apps/jwt/Jwt.middleware';
 import { JwtModule } from '@src/apps/jwt/Jwt.module';
+import { PostModule } from '@src/apps/post/Post.module';
 import { UserModule } from '@src/apps/user/User.module';
 
 @Module({
@@ -57,6 +58,7 @@ import { UserModule } from '@src/apps/user/User.module';
     }),
     AuthModule,
     UserModule,
+    PostModule,
   ],
 })
 export class AppModule implements NestModule {
