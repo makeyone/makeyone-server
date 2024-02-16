@@ -1,6 +1,7 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 
 import { CoreEntity } from '@src/libs/entity/domain/common/Core.entity';
+import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { UserGenderUnion, userGenderKeys } from '@src/libs/entity/domain/user/enums/UserGender.enum';
 import { UserRoleUnion, userRoleKeys } from '@src/libs/entity/domain/user/enums/UserRole.enum';
 import { UserSocialProviderUnion, userSocialProviderKeys } from '@src/libs/entity/domain/user/enums/UserSocialProvider.enum';
@@ -80,4 +81,7 @@ export class UserEntity extends CoreEntity {
 
   @OneToOne(() => UserTokenEntity, (token) => token.user)
   token: UserTokenEntity;
+
+  @OneToMany(() => PostEntity, (posts) => posts.postedUser)
+  posts: PostEntity[];
 }

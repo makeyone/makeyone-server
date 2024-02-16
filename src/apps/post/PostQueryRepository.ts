@@ -6,10 +6,12 @@ import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 @CustomRepository(PostEntity)
 export class PostQueryRepository extends Repository<PostEntity> {
   async findPostById(postId: number): Promise<PostEntity> {
-    const row = await this.findOne({
-      select: ['id'],
-      where: { id: postId },
-    });
+    const row = await this.createQueryBuilder('post')
+      .select(['post.id', 'post.createdAt', 'u.id', 'u.profileImg', 'u.nickname'])
+      .leftJoin('post.postedUser', 'u')
+      .where('post.id = :postId', { postId })
+      .getOne();
+
     return row;
   }
 }
