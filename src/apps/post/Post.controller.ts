@@ -1,10 +1,11 @@
-import { Controller, Get, Param, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
 
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { AuthUser } from '@src/apps/auth/decorators/AuthUser.decorator';
 import { RoleGuard } from '@src/apps/auth/decorators/RoleGuard.decorator';
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
+import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostService } from '@src/apps/post/Post.service';
 
@@ -21,5 +22,15 @@ export class PostController {
   @Post()
   async createPost(@AuthUser() authUser: UserEntity): Promise<CreatePostOutput> {
     return await this.postService.createPost(authUser);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/title')
+  async editPostTitle(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostTitleParam: EditPostTitleParam,
+    @Body(ValidationPipe) editPostTitleInput: EditPostTitleInput,
+  ): Promise<EditPostTitleOutput> {
+    return await this.postService.editPostTitle(authUser, editPostTitleParam, editPostTitleInput);
   }
 }

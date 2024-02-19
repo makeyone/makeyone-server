@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -6,6 +6,7 @@ import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
+import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
 
@@ -36,6 +37,27 @@ export class PostService {
     return {
       ok: true,
       createdPostId: createdPost.id,
+    };
+  }
+
+  async editPostTitle(
+    me: UserEntity,
+    { postId }: EditPostTitleParam,
+    { postTitle }: EditPostTitleInput,
+  ): Promise<EditPostTitleOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    await this.postRepository.update(postId, { postTitle });
+
+    return {
+      ok: true,
+      editedPostId: postId,
     };
   }
 }
