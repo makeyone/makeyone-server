@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 
 import { IncludeSoftDeleteCoreEntity } from '@src/libs/entity/domain/common/Core.entity';
+import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
@@ -16,4 +17,7 @@ export class PostEntity extends IncludeSoftDeleteCoreEntity {
 
   @OneToMany(() => PostImageEntity, (postImages) => postImages.post)
   postImages: PostImageEntity[];
+
+  @OneToOne(() => PostHousingEntity, (postHousing) => postHousing.post)
+  postHousing: PostHousingEntity;
 }

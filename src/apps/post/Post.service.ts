@@ -3,13 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
+import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
+import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
+import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
 
 @Injectable()
@@ -21,6 +24,9 @@ export class PostService {
     private readonly postQueryRepository: PostQueryRepository,
     @InjectRepository(PostImageEntity)
     private readonly postImageRepository: Repository<PostImageEntity>,
+    @InjectRepository(PostHousingEntity)
+    private readonly postHousingRepository: Repository<PostHousingEntity>,
+    private readonly postHousingQueryRepository: PostHousingQueryRepository,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
@@ -91,6 +97,48 @@ export class PostService {
           }),
         );
       }
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
+    };
+  }
+
+  async editPostHousing(
+    me: UserEntity,
+    { postId }: EditPostHousingParam,
+    {
+      housingName,
+      housingColor,
+      housingMount,
+      housingLayout,
+      housingWindowKeyLayout,
+      housingFunctionKeyLayout,
+      isHousingReAnodized,
+    }: EditPostHousingInput,
+  ): Promise<EditPostHousingOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    const postHousing = await this.postHousingQueryRepository.findPostHousingByPostId(postId);
+    await this.postHousingRepository.save({
+      ...(postHousing && { id: postHousing.id }),
+      housingName,
+      housingColor,
+      housingMount,
+      housingLayout,
+      housingWindowKeyLayout,
+      housingFunctionKeyLayout,
+      isHousingReAnodized,
+      post: {
+        id: postId,
+      },
     });
 
     return {
