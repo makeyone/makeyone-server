@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { IncludeSoftDeleteCoreEntity } from '@src/libs/entity/domain/common/Core.entity';
+import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 @Entity({ name: 'post' })
@@ -12,4 +13,7 @@ export class PostEntity extends IncludeSoftDeleteCoreEntity {
     onDelete: 'NO ACTION',
   })
   postedUser: UserEntity;
+
+  @OneToMany(() => PostImageEntity, (postImages) => postImages.post)
+  postImages: PostImageEntity[];
 }
