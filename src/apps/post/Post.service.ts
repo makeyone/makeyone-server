@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
+import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
+import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
@@ -17,6 +19,8 @@ export class PostService {
     @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,
     private readonly postQueryRepository: PostQueryRepository,
+    @InjectRepository(PostImageEntity)
+    private readonly postImageRepository: Repository<PostImageEntity>,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
@@ -54,6 +58,40 @@ export class PostService {
     }
 
     await this.postRepository.update(postId, { postTitle });
+
+    return {
+      ok: true,
+      editedPostId: postId,
+    };
+  }
+
+  async editPostImages(
+    me: UserEntity,
+    { postId }: EditPostImagesParam,
+    { postImages }: EditPostImagesInput,
+  ): Promise<EditPostImagesOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    await this.dataSource.transaction(async (manager) => {
+      const postImageRepository = manager.withRepository(this.postImageRepository);
+      await postImageRepository.delete({ post: { id: postId } });
+      for (const image of postImages) {
+        await postImageRepository.save(
+          postImageRepository.create({
+            imageUrl: image,
+            post: {
+              id: postId,
+            },
+          }),
+        );
+      }
+    });
 
     return {
       ok: true,
