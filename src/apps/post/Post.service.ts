@@ -5,6 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
+import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
@@ -14,6 +15,7 @@ import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@sr
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
+import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
 
 @Injectable()
 export class PostService {
@@ -27,6 +29,9 @@ export class PostService {
     @InjectRepository(PostHousingEntity)
     private readonly postHousingRepository: Repository<PostHousingEntity>,
     private readonly postHousingQueryRepository: PostHousingQueryRepository,
+    @InjectRepository(PostSwitchEntity)
+    private readonly postSwitchRepository: Repository<PostSwitchEntity>,
+    private readonly postSwitchQueryRepository: PostSwitchQueryRepository,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
