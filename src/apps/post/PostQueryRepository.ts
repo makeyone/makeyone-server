@@ -26,6 +26,7 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'housing.housingWindowKeyLayout',
         'housing.housingFunctionKeyLayout',
         'housing.isHousingReAnodized',
+        'switch.id',
         'switch.switchName',
         'switch.switchType',
         'switch.isSlientSwitch',
@@ -34,11 +35,18 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'switch.springLength',
         'switch.switchFilm',
         'switch.remark',
+        'keycap.id',
+        'keycap.keycapName',
+        'keycap.keycapProfile',
+        'keycap.keycapTexture',
+        'keycap.manufacturer',
+        'keycap.remark',
       ])
       .leftJoin('post.postedUser', 'user')
       .leftJoin('post.postImages', 'image')
       .leftJoin('post.postHousing', 'housing')
       .leftJoin('post.postSwitches', 'switch')
+      .leftJoin('post.postKeycaps', 'keycap')
       .where('post.id = :postId', { postId })
       .getOne();
 

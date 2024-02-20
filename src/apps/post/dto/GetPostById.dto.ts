@@ -4,6 +4,7 @@ import { CoreOutput } from '@src/libs/entity/domain/common/Core.dto';
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
+import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
@@ -38,12 +39,14 @@ type PostSwitch = Pick<
   | 'switchFilm'
   | 'remark'
 >;
+type PostKeycap = Pick<PostKeycapEntity, 'id' | 'keycapName' | 'keycapProfile' | 'keycapTexture' | 'manufacturer' | 'remark'>;
 
 export type GetPostById = Post & {
   postedUser: User;
   postImages: PostImage[];
   postHousing: PostHousing | null;
   postSwitches: PostSwitch[];
+  postKeycaps: PostKeycap[];
 };
 
 export class GetPostByIdOutput extends CoreOutput {
