@@ -7,6 +7,7 @@ import { RoleGuard } from '@src/apps/auth/decorators/RoleGuard.decorator';
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
+import { EditPostSwitchInput, EditPostSwitchOutput, EditPostSwitchParam } from '@src/apps/post/dto/EditPostSwitch.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostService } from '@src/apps/post/Post.service';
@@ -54,5 +55,15 @@ export class PostController {
     @Body(ValidationPipe) editPostHousingInput: EditPostHousingInput,
   ): Promise<EditPostHousingOutput> {
     return await this.postService.editPostHousing(authUser, editPostHousingParam, editPostHousingInput);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/switch')
+  async editPostSwitch(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostSwitchParam: EditPostSwitchParam,
+    @Body(ValidationPipe) editPostSwitchInput: EditPostSwitchInput,
+  ): Promise<EditPostSwitchOutput> {
+    return await this.postService.editPostSwitch(authUser, editPostSwitchParam, editPostSwitchInput);
   }
 }

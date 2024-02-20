@@ -4,6 +4,7 @@ import { CoreOutput } from '@src/libs/entity/domain/common/Core.dto';
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
+import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 export class GetPostByIdParam {
@@ -25,11 +26,24 @@ type PostHousing = Pick<
   | 'housingFunctionKeyLayout'
   | 'isHousingReAnodized'
 >;
+type PostSwitch = Pick<
+  PostSwitchEntity,
+  | 'id'
+  | 'switchName'
+  | 'switchType'
+  | 'isSlientSwitch'
+  | 'switchLube'
+  | 'bottomOutForce'
+  | 'springLength'
+  | 'switchFilm'
+  | 'remark'
+>;
 
 export type GetPostById = Post & {
   postedUser: User;
   postImages: PostImage[];
   postHousing: PostHousing | null;
+  postSwitches: PostSwitch[];
 };
 
 export class GetPostByIdOutput extends CoreOutput {

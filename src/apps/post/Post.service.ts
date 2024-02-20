@@ -11,6 +11,7 @@ import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
+import { EditPostSwitchInput, EditPostSwitchOutput, EditPostSwitchParam } from '@src/apps/post/dto/EditPostSwitch.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
@@ -144,6 +145,76 @@ export class PostService {
       post: {
         id: postId,
       },
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
+    };
+  }
+
+  async editPostSwitch(
+    me: UserEntity,
+    { postId }: EditPostSwitchParam,
+    { switches }: EditPostSwitchInput,
+  ): Promise<EditPostSwitchOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    await this.dataSource.transaction(async (manager) => {
+      const postSwitchRepository = manager.withRepository(this.postSwitchRepository);
+      const postSwitchQueryRepository = manager.withRepository(this.postSwitchQueryRepository);
+
+      // 기존에 등록된 스위치를 가져오고 switchId 기준으로 매핑
+      const existingSwitches = await postSwitchQueryRepository.findPostSwitchesByPostId(postId);
+      const existingSwitchesMap = new Map(existingSwitches.map((keyboardSwitch) => [keyboardSwitch.id, keyboardSwitch]));
+
+      // 수정된 스위치 목록에서 기존 스위치가 제거되었으면 삭제
+      for (const existingSwitch of existingSwitches) {
+        const switchExists = switches.some((keyboardSwitch) => keyboardSwitch.switchId === existingSwitch.id);
+        if (!switchExists) {
+          await postSwitchRepository.delete(existingSwitch.id);
+          existingSwitchesMap.delete(existingSwitch.id);
+        }
+      }
+
+      for (const keyboardSwitch of switches) {
+        // 기존의 스위치가 아직 있으면 update
+        if (existingSwitchesMap.has(keyboardSwitch.switchId) === true) {
+          await postSwitchRepository.update(keyboardSwitch.switchId, {
+            switchName: keyboardSwitch.switchName,
+            switchType: keyboardSwitch.switchType,
+            isSlientSwitch: keyboardSwitch.isSlientSwitch,
+            switchLube: keyboardSwitch.switchLube,
+            bottomOutForce: keyboardSwitch.bottomOutForce || null,
+            springLength: keyboardSwitch.springLength || null,
+            switchFilm: keyboardSwitch.switchFilm || null,
+            remark: keyboardSwitch.remark || null,
+          });
+        }
+
+        // 기존의 스위치가 없으면 insert
+        if (existingSwitchesMap.has(keyboardSwitch.switchId) === false) {
+          await postSwitchRepository.save(
+            postSwitchRepository.create({
+              switchName: keyboardSwitch.switchName,
+              switchType: keyboardSwitch.switchType,
+              isSlientSwitch: keyboardSwitch.isSlientSwitch,
+              switchLube: keyboardSwitch.switchLube,
+              ...(keyboardSwitch.bottomOutForce && { bottomOutForce: keyboardSwitch.bottomOutForce }),
+              ...(keyboardSwitch.springLength && { springLength: keyboardSwitch.springLength }),
+              ...(keyboardSwitch.switchFilm && { switchFilm: keyboardSwitch.switchFilm }),
+              ...(keyboardSwitch.remark && { remark: keyboardSwitch.remark }),
+              post,
+            }),
+          );
+        }
+      }
     });
 
     return {
