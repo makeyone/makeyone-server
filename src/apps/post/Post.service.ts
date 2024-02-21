@@ -6,6 +6,7 @@ import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
+import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
@@ -13,12 +14,18 @@ import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import { EditPostKeycapInput, EditPostKeycapOutput, EditPostKeycapParam } from '@src/apps/post/dto/EditPostKeycap.dto';
+import {
+  EditPostStabilizerInput,
+  EditPostStabilizerOutput,
+  EditPostStabilizerParam,
+} from '@src/apps/post/dto/EditPostStabilizer.dto';
 import { EditPostSwitchInput, EditPostSwitchOutput, EditPostSwitchParam } from '@src/apps/post/dto/EditPostSwitch.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
 import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
+import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
 
 @Injectable()
@@ -39,6 +46,9 @@ export class PostService {
     @InjectRepository(PostKeycapEntity)
     private readonly postKeycapRepository: Repository<PostKeycapEntity>,
     private readonly postKeycapQueryRepository: PostKeycapQueryRepository,
+    @InjectRepository(PostStabilizerEntity)
+    private readonly postStabilizerRepository: Repository<PostStabilizerEntity>,
+    private readonly postStabilizerQueryRepository: PostStabilizerQueryRepository,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
@@ -246,11 +256,9 @@ export class PostService {
       const postKeycapRepository = manager.withRepository(this.postKeycapRepository);
       const postKeycapQueryRepository = manager.withRepository(this.postKeycapQueryRepository);
 
-      // 기존에 등록된 스위치를 가져오고 keycapId 기준으로 매핑
       const existingKeycaps = await postKeycapQueryRepository.findPostKeycapsByPostId(postId);
       const existingKeycapsMap = new Map(existingKeycaps.map((keycap) => [keycap.id, keycap]));
 
-      // 수정된 스위치 목록에서 기존 스위치가 제거되었으면 삭제
       for (const existingKeycap of existingKeycaps) {
         const keycapExists = keycaps.some((keycap) => keycap.keycapId === existingKeycap.id);
         if (!keycapExists) {
@@ -260,7 +268,6 @@ export class PostService {
       }
 
       for (const keycap of keycaps) {
-        // 기존의 스위치가 아직 있으면 update
         if (existingKeycapsMap.has(keycap.keycapId) === true) {
           await postKeycapRepository.update(keycap.keycapId, {
             keycapName: keycap.keycapName,
@@ -271,7 +278,6 @@ export class PostService {
           });
         }
 
-        // 기존의 스위치가 없으면 insert
         if (existingKeycapsMap.has(keycap.keycapId) === false) {
           await postKeycapRepository.save(
             postKeycapRepository.create({
@@ -280,6 +286,64 @@ export class PostService {
               keycapTexture: keycap.keycapTexture,
               ...(keycap.manufacturer && { manufacturer: keycap.manufacturer }),
               ...(keycap.remark && { remark: keycap.remark }),
+              post,
+            }),
+          );
+        }
+      }
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
+    };
+  }
+
+  async editPostStabilizer(
+    me: UserEntity,
+    { postId }: EditPostStabilizerParam,
+    { stabilizers }: EditPostStabilizerInput,
+  ): Promise<EditPostStabilizerOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    await this.dataSource.transaction(async (manager) => {
+      const postStabilizerRepository = manager.withRepository(this.postStabilizerRepository);
+      const postStabilizerQueryRepository = manager.withRepository(this.postStabilizerQueryRepository);
+
+      const existingStabilizers = await postStabilizerQueryRepository.findPostStabilizersByPostId(postId);
+      const existingStabilizersMap = new Map(existingStabilizers.map((stabilizer) => [stabilizer.id, stabilizer]));
+
+      for (const existingStabilizer of existingStabilizers) {
+        const stabilizerExists = stabilizers.some((stabilizer) => stabilizer.stabilizerId === existingStabilizer.id);
+        if (!stabilizerExists) {
+          await postStabilizerRepository.delete(existingStabilizer.id);
+          existingStabilizersMap.delete(existingStabilizer.id);
+        }
+      }
+
+      for (const stabilizer of stabilizers) {
+        if (existingStabilizersMap.has(stabilizer.stabilizerId) === true) {
+          await postStabilizerRepository.update(stabilizer.stabilizerId, {
+            stabilizerName: stabilizer.stabilizerName,
+            stabilizerType: stabilizer.stabilizerType,
+            stabilizerMount: stabilizer.stabilizerMount,
+            remark: stabilizer.remark || null,
+          });
+        }
+
+        if (existingStabilizersMap.has(stabilizer.stabilizerId) === false) {
+          await postStabilizerRepository.save(
+            postStabilizerRepository.create({
+              stabilizerName: stabilizer.stabilizerName,
+              stabilizerType: stabilizer.stabilizerType,
+              stabilizerMount: stabilizer.stabilizerMount,
+              ...(stabilizer.remark && { remark: stabilizer.remark }),
               post,
             }),
           );

@@ -8,6 +8,11 @@ import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import { EditPostKeycapInput, EditPostKeycapOutput, EditPostKeycapParam } from '@src/apps/post/dto/EditPostKeycap.dto';
+import {
+  EditPostStabilizerInput,
+  EditPostStabilizerOutput,
+  EditPostStabilizerParam,
+} from '@src/apps/post/dto/EditPostStabilizer.dto';
 import { EditPostSwitchInput, EditPostSwitchOutput, EditPostSwitchParam } from '@src/apps/post/dto/EditPostSwitch.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
@@ -76,5 +81,15 @@ export class PostController {
     @Body(ValidationPipe) editPostKeycapInput: EditPostKeycapInput,
   ): Promise<EditPostKeycapOutput> {
     return await this.postService.editPostKeycap(authUser, editPostKeycapParam, editPostKeycapInput);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/stabilizer')
+  async editPostStabilizer(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostStabilizerParam: EditPostStabilizerParam,
+    @Body(ValidationPipe) editPostStabilizerInput: EditPostStabilizerInput,
+  ): Promise<EditPostStabilizerOutput> {
+    return await this.postService.editPostStabilizer(authUser, editPostStabilizerParam, editPostStabilizerInput);
   }
 }
