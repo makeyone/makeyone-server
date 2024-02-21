@@ -5,6 +5,7 @@ import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
+import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
@@ -40,6 +41,7 @@ type PostSwitch = Pick<
   | 'remark'
 >;
 type PostKeycap = Pick<PostKeycapEntity, 'id' | 'keycapName' | 'keycapProfile' | 'keycapTexture' | 'manufacturer' | 'remark'>;
+type PostStabilizer = Pick<PostStabilizerEntity, 'id' | 'stabilizerName' | 'stabilizerType' | 'stabilizerMount' | 'remark'>;
 
 export type GetPostById = Post & {
   postedUser: User;
@@ -47,6 +49,7 @@ export type GetPostById = Post & {
   postHousing: PostHousing | null;
   postSwitches: PostSwitch[];
   postKeycaps: PostKeycap[];
+  postStabilizers: PostStabilizer[];
 };
 
 export class GetPostByIdOutput extends CoreOutput {

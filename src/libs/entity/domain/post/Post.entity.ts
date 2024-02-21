@@ -4,6 +4,7 @@ import { IncludeSoftDeleteCoreEntity } from '@src/libs/entity/domain/common/Core
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
+import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
@@ -28,4 +29,7 @@ export class PostEntity extends IncludeSoftDeleteCoreEntity {
 
   @OneToMany(() => PostKeycapEntity, (postKeycaps) => postKeycaps.post)
   postKeycaps: PostKeycapEntity[];
+
+  @OneToMany(() => PostStabilizerEntity, (postStabilizers) => postStabilizers.post)
+  postStabilizers: PostStabilizerEntity[];
 }

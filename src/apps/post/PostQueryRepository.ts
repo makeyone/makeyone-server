@@ -41,12 +41,18 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'keycap.keycapTexture',
         'keycap.manufacturer',
         'keycap.remark',
+        'stabilizer.id',
+        'stabilizer.stabilizerName',
+        'stabilizer.stabilizerType',
+        'stabilizer.stabilizerMount',
+        'stabilizer.remark',
       ])
       .leftJoin('post.postedUser', 'user')
       .leftJoin('post.postImages', 'image')
       .leftJoin('post.postHousing', 'housing')
       .leftJoin('post.postSwitches', 'switch')
       .leftJoin('post.postKeycaps', 'keycap')
+      .leftJoin('post.postStabilizers', 'stabilizer')
       .where('post.id = :postId', { postId })
       .getOne();
 

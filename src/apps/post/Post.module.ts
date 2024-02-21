@@ -5,6 +5,7 @@ import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
+import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { EntityModule } from '@src/libs/entity/Entity.module';
 
@@ -14,17 +15,26 @@ import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepos
 import { PostImageQueryRepository } from '@src/apps/post/PostImageQueryRepository';
 import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
+import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PostEntity, PostImageEntity, PostHousingEntity, PostSwitchEntity, PostKeycapEntity]),
+    TypeOrmModule.forFeature([
+      PostEntity,
+      PostImageEntity,
+      PostHousingEntity,
+      PostSwitchEntity,
+      PostKeycapEntity,
+      PostStabilizerEntity,
+    ]),
     EntityModule.forCustomRepository([
       PostQueryRepository,
       PostImageQueryRepository,
       PostHousingQueryRepository,
       PostSwitchQueryRepository,
       PostKeycapQueryRepository,
+      PostStabilizerQueryRepository,
     ]),
   ],
   controllers: [PostController],
