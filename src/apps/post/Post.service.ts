@@ -5,6 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
+import { PostKeyboardLayoutEntity } from '@src/libs/entity/domain/post/PostKeyboardLayout.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
@@ -13,6 +14,11 @@ import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
+import {
+  EditPostKeyboardLayoutInput,
+  EditPostKeyboardLayoutOutput,
+  EditPostKeyboardLayoutParam,
+} from '@src/apps/post/dto/EditPostKeyboardLayout.dto';
 import { EditPostKeycapInput, EditPostKeycapOutput, EditPostKeycapParam } from '@src/apps/post/dto/EditPostKeycap.dto';
 import {
   EditPostStabilizerInput,
@@ -23,6 +29,7 @@ import { EditPostSwitchInput, EditPostSwitchOutput, EditPostSwitchParam } from '
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
+import { PostKeyboardLayoutQueryRepository } from '@src/apps/post/PostKeyboardLayoutQueryRepository';
 import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
 import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
@@ -49,6 +56,9 @@ export class PostService {
     @InjectRepository(PostStabilizerEntity)
     private readonly postStabilizerRepository: Repository<PostStabilizerEntity>,
     private readonly postStabilizerQueryRepository: PostStabilizerQueryRepository,
+    @InjectRepository(PostKeyboardLayoutEntity)
+    private readonly postKeyboardLayoutRepository: Repository<PostKeyboardLayoutEntity>,
+    private readonly postKeyboardLayoutQueryRepository: PostKeyboardLayoutQueryRepository,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
@@ -349,6 +359,36 @@ export class PostService {
           );
         }
       }
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
+    };
+  }
+
+  async editPostKeyboardLayout(
+    me: UserEntity,
+    { postId }: EditPostKeyboardLayoutParam,
+    { keyboardLayout, layoutOptions }: EditPostKeyboardLayoutInput,
+  ): Promise<EditPostKeyboardLayoutOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    const layout = await this.postKeyboardLayoutQueryRepository.findPostKeyboardLayoutByPostId(postId);
+    await this.postKeyboardLayoutRepository.save({
+      ...(layout && { id: layout.id }),
+      layoutName: keyboardLayout.name,
+      keyboardLayout,
+      layoutOptions: layoutOptions ? layoutOptions.map((layoutOption) => layoutOption || 0) : [],
+      post: {
+        id: postId,
+      },
     });
 
     return {
