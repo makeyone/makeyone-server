@@ -28,6 +28,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/schedule": "^4.0.0",
     "@nestjs/typeorm": "^10.0.1",
+    "@the-via/reader": "^1.8.0",
     "axios": "^1.6.4",
     "bcryptjs": "^2.4.3",
     "camelcase-keys": "^6.2.2",
