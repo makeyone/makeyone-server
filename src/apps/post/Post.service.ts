@@ -394,7 +394,12 @@ export class PostService {
     return {
       ok: true,
       editedPostId: postId,
-      editedKeyboardLayout,
+      editedKeyboardLayout: {
+        id: editedKeyboardLayout.id,
+        layoutName: editedKeyboardLayout.layoutName,
+        layoutOptions: editedKeyboardLayout.layoutOptions,
+        keyboardLayout: editedKeyboardLayout.keyboardLayout,
+      },
     };
   }
 }
