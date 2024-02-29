@@ -381,7 +381,7 @@ export class PostService {
     }
 
     const layout = await this.postKeyboardLayoutQueryRepository.findPostKeyboardLayoutByPostId(postId);
-    await this.postKeyboardLayoutRepository.save({
+    const editedKeyboardLayout = await this.postKeyboardLayoutRepository.save({
       ...(layout && { id: layout.id }),
       layoutName: keyboardLayout.name,
       keyboardLayout,
@@ -394,6 +394,7 @@ export class PostService {
     return {
       ok: true,
       editedPostId: postId,
+      editedKeyboardLayout,
     };
   }
 }
