@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { CoreEntity } from '@src/libs/entity/domain/common/Core.entity';
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
+import { PostKeyboardLayoutType } from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
 
 @Entity({ name: 'post_keyboard_layout' })
 export class PostKeyboardLayoutEntity extends CoreEntity {
@@ -14,7 +15,7 @@ export class PostKeyboardLayoutEntity extends CoreEntity {
   @Column({
     type: 'json',
   })
-  keyboardLayout: object;
+  keyboardLayout: PostKeyboardLayoutType;
 
   @Column({
     type: 'json',

@@ -19,6 +19,11 @@ import {
   EditPostStabilizerParam,
 } from '@src/apps/post/dto/EditPostStabilizer.dto';
 import { EditPostSwitchInput, EditPostSwitchOutput, EditPostSwitchParam } from '@src/apps/post/dto/EditPostSwitch.dto';
+import {
+  EditPostSwitchOnLayoutInput,
+  EditPostSwitchOnLayoutOutput,
+  EditPostSwitchOnLayoutParam,
+} from '@src/apps/post/dto/EditPostSwitchOnLayout.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostService } from '@src/apps/post/Post.service';
@@ -106,5 +111,15 @@ export class PostController {
     @Body(ValidationPipe) editPostKeyboardLayoutInput: EditPostKeyboardLayoutInput,
   ): Promise<EditPostKeyboardLayoutOutput> {
     return await this.postService.editPostKeyboardLayout(authUser, editPostKeyboardLayoutParam, editPostKeyboardLayoutInput);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/switch-on-layout')
+  async editPostSwitchOnLayout(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostSwitchOnLayoutParam: EditPostSwitchOnLayoutParam,
+    @Body(ValidationPipe) editPostSwitchOnLayoutInput: EditPostSwitchOnLayoutInput,
+  ): Promise<EditPostSwitchOnLayoutOutput> {
+    return await this.postService.editPostSwitchOnLayout(authUser, editPostSwitchOnLayoutParam, editPostSwitchOnLayoutInput);
   }
 }

@@ -9,6 +9,7 @@ import { PostKeyboardLayoutEntity } from '@src/libs/entity/domain/post/PostKeybo
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
+import { PostKeyboardLayoutKeyType } from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
@@ -26,6 +27,11 @@ import {
   EditPostStabilizerParam,
 } from '@src/apps/post/dto/EditPostStabilizer.dto';
 import { EditPostSwitchInput, EditPostSwitchOutput, EditPostSwitchParam } from '@src/apps/post/dto/EditPostSwitch.dto';
+import {
+  EditPostSwitchOnLayoutInput,
+  EditPostSwitchOnLayoutOutput,
+  EditPostSwitchOnLayoutParam,
+} from '@src/apps/post/dto/EditPostSwitchOnLayout.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
@@ -400,6 +406,40 @@ export class PostService {
         layoutOptions: editedKeyboardLayout.layoutOptions,
         keyboardLayout: editedKeyboardLayout.keyboardLayout,
       },
+    };
+  }
+
+  async editPostSwitchOnLayout(
+    me: UserEntity,
+    { postId }: EditPostSwitchOnLayoutParam,
+    { switchId, keys: wantToRegisterKeys }: EditPostSwitchOnLayoutInput,
+  ): Promise<EditPostSwitchOnLayoutOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    const layout = await this.postKeyboardLayoutQueryRepository.findPostKeyboardLayoutByPostId(postId);
+    const copyLayout: PostKeyboardLayoutEntity = { ...layout };
+    const copyLayoutKeys = copyLayout.keyboardLayout.layouts.keys;
+    for (const wantToRegisterKey of wantToRegisterKeys) {
+      const findKey: PostKeyboardLayoutKeyType = copyLayoutKeys.find(
+        (layoutKey) => layoutKey.row === wantToRegisterKey.row && layoutKey.col === wantToRegisterKey.col,
+      );
+      findKey.registeredSwitchId = switchId;
+    }
+
+    await this.postKeyboardLayoutRepository.save({
+      id: layout.id,
+      keyboardLayout: copyLayout.keyboardLayout,
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
     };
   }
 }
