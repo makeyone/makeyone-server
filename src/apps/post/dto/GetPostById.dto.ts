@@ -4,7 +4,7 @@ import { CoreOutput } from '@src/libs/entity/domain/common/Core.dto';
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
-import { PostKeyboardLayoutEntity } from '@src/libs/entity/domain/post/PostKeyboardLayout.entity';
+import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
@@ -43,7 +43,10 @@ type PostSwitch = Pick<
 >;
 type PostKeycap = Pick<PostKeycapEntity, 'id' | 'keycapName' | 'keycapProfile' | 'keycapTexture' | 'manufacturer' | 'remark'>;
 type PostStabilizer = Pick<PostStabilizerEntity, 'id' | 'stabilizerName' | 'stabilizerType' | 'stabilizerMount' | 'remark'>;
-type PostKeyboardLayout = Pick<PostKeyboardLayoutEntity, 'id' | 'layoutName' | 'keyboardLayout' | 'layoutOptions'>;
+type PostKeyboardDefinition = Pick<
+  PostKeyboardDefinitionEntity,
+  'id' | 'definitionName' | 'keyboardDefinition' | 'layoutOptionKeys'
+>;
 
 export type GetPostById = Post & {
   postedUser: User;
@@ -52,7 +55,7 @@ export type GetPostById = Post & {
   postSwitches: PostSwitch[];
   postKeycaps: PostKeycap[];
   postStabilizers: PostStabilizer[];
-  postKeyboardLayout: PostKeyboardLayout;
+  postKeyboardDefinition: PostKeyboardDefinition;
 };
 
 export class GetPostByIdOutput extends CoreOutput {

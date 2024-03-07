@@ -4,31 +4,25 @@ import { CoreEntity } from '@src/libs/entity/domain/common/Core.entity';
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostKeyboardLayoutType } from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
 
-@Entity({ name: 'post_keyboard_layout' })
-export class PostKeyboardLayoutEntity extends CoreEntity {
+@Entity({ name: 'post_keyboard_definition' })
+export class PostKeyboardDefinitionEntity extends CoreEntity {
   @Column({
     type: 'varchar',
     length: 200,
   })
-  layoutName: string;
+  definitionName: string;
 
   @Column({
     type: 'json',
   })
-  keyboardLayout: PostKeyboardLayoutType;
+  keyboardDefinition: PostKeyboardLayoutType;
 
   @Column({
     type: 'json',
   })
-  layoutOptions: number[];
+  layoutOptionKeys: number[];
 
-  @Column({
-    type: 'json',
-    nullable: true,
-  })
-  partsOnLayout: object | null;
-
-  @OneToOne(() => PostEntity, (post) => post.postKeyboardLayout, { onDelete: 'CASCADE' })
+  @OneToOne(() => PostEntity, (post) => post.postKeyboardDefinition, { onDelete: 'CASCADE' })
   @JoinColumn()
   post: PostEntity;
 }

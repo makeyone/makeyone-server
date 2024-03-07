@@ -8,10 +8,10 @@ import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import {
-  EditPostKeyboardLayoutInput,
-  EditPostKeyboardLayoutOutput,
-  EditPostKeyboardLayoutParam,
-} from '@src/apps/post/dto/EditPostKeyboardLayout.dto';
+  EditPostKeyboardDefinitionInput,
+  EditPostKeyboardDefinitionOutput,
+  EditPostKeyboardDefinitionParam,
+} from '@src/apps/post/dto/EditPostKeyboardDefinition.dto';
 import { EditPostKeycapInput, EditPostKeycapOutput, EditPostKeycapParam } from '@src/apps/post/dto/EditPostKeycap.dto';
 import {
   EditPostStabilizerInput,
@@ -104,13 +104,17 @@ export class PostController {
   }
 
   @RoleGuard(['ANY'])
-  @Patch('/:postId/keyboard-layout')
-  async editPostKeyboardLayout(
+  @Patch('/:postId/keyboard-definition')
+  async editPostKeyboardDefinition(
     @AuthUser() authUser: UserEntity,
-    @Param(ValidationPipe) editPostKeyboardLayoutParam: EditPostKeyboardLayoutParam,
-    @Body(ValidationPipe) editPostKeyboardLayoutInput: EditPostKeyboardLayoutInput,
-  ): Promise<EditPostKeyboardLayoutOutput> {
-    return await this.postService.editPostKeyboardLayout(authUser, editPostKeyboardLayoutParam, editPostKeyboardLayoutInput);
+    @Param(ValidationPipe) editPostKeyboardDefinitionParam: EditPostKeyboardDefinitionParam,
+    @Body(ValidationPipe) editPostKeyboardDefinitionInput: EditPostKeyboardDefinitionInput,
+  ): Promise<EditPostKeyboardDefinitionOutput> {
+    return await this.postService.editPostKeyboardDefinition(
+      authUser,
+      editPostKeyboardDefinitionParam,
+      editPostKeyboardDefinitionInput,
+    );
   }
 
   @RoleGuard(['ANY'])

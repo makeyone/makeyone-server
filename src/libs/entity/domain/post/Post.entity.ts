@@ -3,7 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { IncludeSoftDeleteCoreEntity } from '@src/libs/entity/domain/common/Core.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
-import { PostKeyboardLayoutEntity } from '@src/libs/entity/domain/post/PostKeyboardLayout.entity';
+import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
@@ -34,6 +34,6 @@ export class PostEntity extends IncludeSoftDeleteCoreEntity {
   @OneToMany(() => PostStabilizerEntity, (postStabilizers) => postStabilizers.post)
   postStabilizers: PostStabilizerEntity[];
 
-  @OneToOne(() => PostKeyboardLayoutEntity, (postKeyboardLayout) => postKeyboardLayout.post)
-  postKeyboardLayout: PostKeyboardLayoutEntity;
+  @OneToOne(() => PostKeyboardDefinitionEntity, (postKeyboardDefinition) => postKeyboardDefinition.post)
+  postKeyboardDefinition: PostKeyboardDefinitionEntity;
 }

@@ -46,10 +46,10 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'stabilizer.stabilizerType',
         'stabilizer.stabilizerMount',
         'stabilizer.remark',
-        'keyboardLayout.id',
-        'keyboardLayout.layoutName',
-        'keyboardLayout.keyboardLayout',
-        'keyboardLayout.layoutOptions',
+        'keyboardDefinition.id',
+        'keyboardDefinition.definitionName',
+        'keyboardDefinition.keyboardDefinition',
+        'keyboardDefinition.layoutOptionKeys',
       ])
       .leftJoin('post.postedUser', 'user')
       .leftJoin('post.postImages', 'image')
@@ -57,7 +57,7 @@ export class PostQueryRepository extends Repository<PostEntity> {
       .leftJoin('post.postSwitches', 'switch')
       .leftJoin('post.postKeycaps', 'keycap')
       .leftJoin('post.postStabilizers', 'stabilizer')
-      .leftJoin('post.postKeyboardLayout', 'keyboardLayout')
+      .leftJoin('post.postKeyboardDefinition', 'keyboardDefinition')
       .where('post.id = :postId', { postId })
       .getOne();
 
