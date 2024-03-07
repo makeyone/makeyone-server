@@ -23,4 +23,22 @@ export class PostSwitchQueryRepository extends Repository<PostSwitchEntity> {
       .getMany();
     return rows;
   }
+
+  async findPostSwitchById(switchId: number): Promise<PostSwitchEntity> {
+    const rows = await this.createQueryBuilder('switch')
+      .select([
+        'switch.id',
+        'switch.switchName',
+        'switch.switchType',
+        'switch.isSlientSwitch',
+        'switch.switchLube',
+        'switch.bottomOutForce',
+        'switch.springLength',
+        'switch.switchFilm',
+        'switch.remark',
+      ])
+      .where('switch.id = :switchId', { switchId })
+      .getOne();
+    return rows;
+  }
 }

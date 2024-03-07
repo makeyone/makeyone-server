@@ -1,8 +1,22 @@
 import { VIADefinitionV2, VIADefinitionV3, VIAKey } from '@the-via/reader';
 
-export type PostKeyboardLayoutKeyType = VIAKey & { registeredSwitchId?: number };
-export type PostKeyboardLayoutType = (VIADefinitionV2 | VIADefinitionV3) & {
+import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
+
+export type PostKeyboardLayoutKey = VIAKey & {
+  registeredSwitch?: Pick<PostSwitchEntity, 'id' | 'switchName'>;
+};
+
+export type PostKeyboardLayoutOptionKey = {
+  [g: string]: {
+    [o: string]: (VIAKey & {
+      registeredSwitch?: Pick<PostSwitchEntity, 'id' | 'switchName'>;
+    })[];
+  };
+};
+
+export type PostKeyboardDefinitionType = (VIADefinitionV2 | VIADefinitionV3) & {
   layouts: {
-    keys: PostKeyboardLayoutKeyType[];
+    keys: PostKeyboardLayoutKey[];
+    optionKeys: PostKeyboardLayoutOptionKey;
   };
 };

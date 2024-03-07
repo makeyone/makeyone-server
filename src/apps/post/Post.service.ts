@@ -9,7 +9,11 @@ import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostK
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
-import { PostKeyboardLayoutKeyType } from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
+import {
+  PostKeyboardDefinitionType,
+  PostKeyboardLayoutKey,
+  PostKeyboardLayoutOptionKey,
+} from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
@@ -422,19 +426,54 @@ export class PostService {
       throw new UnauthorizedException('UNAUTHORIZED_POST');
     }
 
+    const keyboardSwitch = await this.postSwitchQueryRepository.findPostSwitchById(switchId);
+    if (!keyboardSwitch) {
+      throw new NotFoundException('SWITCH_NOT_FOUND');
+    }
+
     const definition = await this.postKeyboardDefinitionQueryRepository.findPostKeyboardDefinitionByPostId(postId);
     const copyDefinition: PostKeyboardDefinitionEntity = { ...definition };
-    const copyLayoutKeys = copyDefinition.keyboardDefinition.layouts.keys;
+
+    const editDefinition: PostKeyboardDefinitionType = { ...definition.keyboardDefinition };
+
+    // 일반 키에 스위치를 등록한다.
+    const layoutKeys = copyDefinition.keyboardDefinition.layouts.keys;
     for (const wantToRegisterKey of wantToRegisterKeys) {
-      const findKey: PostKeyboardLayoutKeyType = copyLayoutKeys.find(
+      const findKey: PostKeyboardLayoutKey = layoutKeys.find(
         (layoutKey) => layoutKey.row === wantToRegisterKey.row && layoutKey.col === wantToRegisterKey.col,
       );
-      findKey.registeredSwitchId = switchId;
+      if (findKey) {
+        findKey.registeredSwitch = {
+          id: keyboardSwitch.id,
+          switchName: keyboardSwitch.switchName,
+        };
+      }
     }
+    editDefinition.layouts.keys = layoutKeys;
+
+    // 옵션 키에 스위치를 등록한다
+    const optionKeys = copyDefinition.layoutOptionKeys;
+    const layoutOptionKeys = copyDefinition.keyboardDefinition.layouts.optionKeys;
+    Object.entries(layoutOptionKeys).flatMap(([key, options]) => {
+      const index = parseInt(key, 10);
+      const keys = optionKeys[index] ? options[optionKeys[index]] : options[0];
+      for (const wantToRegisterKey of wantToRegisterKeys) {
+        const findOptionKey: PostKeyboardLayoutKey = keys.find(
+          (key) => key.col === wantToRegisterKey.col && key.row === wantToRegisterKey.row,
+        );
+        if (findOptionKey) {
+          findOptionKey.registeredSwitch = {
+            id: keyboardSwitch.id,
+            switchName: keyboardSwitch.switchName,
+          };
+        }
+      }
+    });
+    editDefinition.layouts.optionKeys = layoutOptionKeys;
 
     await this.postKeyboardDefinitionRepository.save({
       id: definition.id,
-      keyboardDefinition: copyDefinition.keyboardDefinition,
+      keyboardDefinition: editDefinition,
     });
 
     return {
