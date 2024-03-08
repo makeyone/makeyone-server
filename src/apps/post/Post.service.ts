@@ -9,11 +9,7 @@ import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostK
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
-import {
-  PostKeyboardDefinitionType,
-  PostKeyboardLayoutKey,
-  PostKeyboardLayoutOptionKey,
-} from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
+import { PostKeyboardDefinitionType, PostKeyboardLayoutKey } from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
@@ -25,6 +21,11 @@ import {
   EditPostKeyboardDefinitionParam,
 } from '@src/apps/post/dto/EditPostKeyboardDefinition.dto';
 import { EditPostKeycapInput, EditPostKeycapOutput, EditPostKeycapParam } from '@src/apps/post/dto/EditPostKeycap.dto';
+import {
+  EditPostKeycapOnLayoutInput,
+  EditPostKeycapOnLayoutOutput,
+  EditPostKeycapOnLayoutParam,
+} from '@src/apps/post/dto/EditPostKeycapOnLayout.dto';
 import {
   EditPostStabilizerInput,
   EditPostStabilizerOutput,
@@ -465,6 +466,75 @@ export class PostService {
           findOptionKey.registeredSwitch = {
             id: keyboardSwitch.id,
             switchName: keyboardSwitch.switchName,
+          };
+        }
+      }
+    });
+    editDefinition.layouts.optionKeys = layoutOptionKeys;
+
+    await this.postKeyboardDefinitionRepository.save({
+      id: definition.id,
+      keyboardDefinition: editDefinition,
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
+    };
+  }
+
+  async editPostKeycapOnLayout(
+    me: UserEntity,
+    { postId }: EditPostKeycapOnLayoutParam,
+    { keycapId, keys: wantToRegisterKeys }: EditPostKeycapOnLayoutInput,
+  ): Promise<EditPostKeycapOnLayoutOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    const keyboardKeycap = await this.postKeycapQueryRepository.findPostKeycapById(keycapId);
+    if (!keyboardKeycap) {
+      throw new NotFoundException('KEYCAP_NOT_FOUND');
+    }
+
+    const definition = await this.postKeyboardDefinitionQueryRepository.findPostKeyboardDefinitionByPostId(postId);
+    const copyDefinition: PostKeyboardDefinitionEntity = { ...definition };
+
+    const editDefinition: PostKeyboardDefinitionType = { ...definition.keyboardDefinition };
+
+    // 일반 키에 키캡을 등록한다.
+    const layoutKeys = copyDefinition.keyboardDefinition.layouts.keys;
+    for (const wantToRegisterKey of wantToRegisterKeys) {
+      const findKey: PostKeyboardLayoutKey = layoutKeys.find(
+        (layoutKey) => layoutKey.row === wantToRegisterKey.row && layoutKey.col === wantToRegisterKey.col,
+      );
+      if (findKey) {
+        findKey.registeredKeycap = {
+          id: keyboardKeycap.id,
+          keycapName: keyboardKeycap.keycapName,
+        };
+      }
+    }
+    editDefinition.layouts.keys = layoutKeys;
+
+    // 옵션 키에 키캡을 등록한다
+    const optionKeys = copyDefinition.layoutOptionKeys;
+    const layoutOptionKeys = copyDefinition.keyboardDefinition.layouts.optionKeys;
+    Object.entries(layoutOptionKeys).flatMap(([key, options]) => {
+      const index = parseInt(key, 10);
+      const keys = optionKeys[index] ? options[optionKeys[index]] : options[0];
+      for (const wantToRegisterKey of wantToRegisterKeys) {
+        const findOptionKey: PostKeyboardLayoutKey = keys.find(
+          (key) => key.col === wantToRegisterKey.col && key.row === wantToRegisterKey.row,
+        );
+        if (findOptionKey) {
+          findOptionKey.registeredKeycap = {
+            id: keyboardKeycap.id,
+            keycapName: keyboardKeycap.keycapName,
           };
         }
       }

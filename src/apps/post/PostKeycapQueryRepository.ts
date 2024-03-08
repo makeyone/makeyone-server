@@ -20,4 +20,19 @@ export class PostKeycapQueryRepository extends Repository<PostKeycapEntity> {
       .getMany();
     return rows;
   }
+
+  async findPostKeycapById(keycapId: number): Promise<PostKeycapEntity> {
+    const rows = await this.createQueryBuilder('keycap')
+      .select([
+        'keycap.id',
+        'keycap.keycapName',
+        'keycap.keycapProfile',
+        'keycap.keycapTexture',
+        'keycap.manufacturer',
+        'keycap.remark',
+      ])
+      .where('keycap.id = :keycapId', { keycapId })
+      .getOne();
+    return rows;
+  }
 }

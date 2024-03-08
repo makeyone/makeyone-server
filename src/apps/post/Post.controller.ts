@@ -14,6 +14,11 @@ import {
 } from '@src/apps/post/dto/EditPostKeyboardDefinition.dto';
 import { EditPostKeycapInput, EditPostKeycapOutput, EditPostKeycapParam } from '@src/apps/post/dto/EditPostKeycap.dto';
 import {
+  EditPostKeycapOnLayoutInput,
+  EditPostKeycapOnLayoutOutput,
+  EditPostKeycapOnLayoutParam,
+} from '@src/apps/post/dto/EditPostKeycapOnLayout.dto';
+import {
   EditPostStabilizerInput,
   EditPostStabilizerOutput,
   EditPostStabilizerParam,
@@ -125,5 +130,15 @@ export class PostController {
     @Body(ValidationPipe) editPostSwitchOnLayoutInput: EditPostSwitchOnLayoutInput,
   ): Promise<EditPostSwitchOnLayoutOutput> {
     return await this.postService.editPostSwitchOnLayout(authUser, editPostSwitchOnLayoutParam, editPostSwitchOnLayoutInput);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/keycap-on-layout')
+  async editPostKeycapOnLayout(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostKeycapOnLayoutParam: EditPostKeycapOnLayoutParam,
+    @Body(ValidationPipe) editPostKeycapOnLayoutInput: EditPostKeycapOnLayoutInput,
+  ): Promise<EditPostKeycapOnLayoutOutput> {
+    return await this.postService.editPostKeycapOnLayout(authUser, editPostKeycapOnLayoutParam, editPostKeycapOnLayoutInput);
   }
 }
