@@ -9,6 +9,7 @@ import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostK
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
 import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
+import { PostSettingEntity } from '@src/libs/entity/domain/post/PostSetting.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { PostVideoEntity } from '@src/libs/entity/domain/post/PostVideo.entity';
@@ -24,6 +25,7 @@ import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryReposit
 import { PostPCBQueryRepository } from '@src/apps/post/PostPCBQueryRepository';
 import { PostPlateQueryRepository } from '@src/apps/post/PostPlateQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
+import { PostSettingQueryRepository } from '@src/apps/post/PostSettingQueryRepository';
 import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
 import { PostVideoQueryRepository } from '@src/apps/post/PostVideoQueryRepository';
@@ -42,6 +44,7 @@ import { PostVideoQueryRepository } from '@src/apps/post/PostVideoQueryRepositor
       PostPlateEntity,
       PostFoamEntity,
       PostVideoEntity,
+      PostSettingEntity,
     ]),
     EntityModule.forCustomRepository([
       PostQueryRepository,
@@ -55,6 +58,7 @@ import { PostVideoQueryRepository } from '@src/apps/post/PostVideoQueryRepositor
       PostPlateQueryRepository,
       PostFoamQueryRepository,
       PostVideoQueryRepository,
+      PostSettingQueryRepository,
     ]),
   ],
   controllers: [PostController],

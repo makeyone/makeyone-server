@@ -8,6 +8,7 @@ import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostK
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
 import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
+import { PostSettingEntity } from '@src/libs/entity/domain/post/PostSetting.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { PostVideoEntity } from '@src/libs/entity/domain/post/PostVideo.entity';
@@ -52,4 +53,7 @@ export class PostEntity extends IncludeSoftDeleteCoreEntity {
 
   @OneToOne(() => PostVideoEntity, (postVideo) => postVideo.post)
   postVideo: PostVideoEntity;
+
+  @OneToOne(() => PostSettingEntity, (postSetting) => postSetting.post)
+  postSetting: PostSettingEntity;
 }

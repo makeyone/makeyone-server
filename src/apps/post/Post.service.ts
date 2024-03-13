@@ -10,6 +10,7 @@ import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostK
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
 import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
+import { PostSettingEntity } from '@src/libs/entity/domain/post/PostSetting.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { PostVideoEntity } from '@src/libs/entity/domain/post/PostVideo.entity';
@@ -35,6 +36,7 @@ import {
 } from '@src/apps/post/dto/EditPostKeycapOnLayout.dto';
 import { EditPostPCBInput, EditPostPCBOutput, EditPostPCBParam } from '@src/apps/post/dto/EditPostPCB.dto';
 import { EditPostPlateInput, EditPostPlateOutput, EditPostPlateParam } from '@src/apps/post/dto/EditPostPlate.dto';
+import { EditPostSettingInput, EditPostSettingOutput, EditPostSettingParam } from '@src/apps/post/dto/EditPostSetting.dto';
 import {
   EditPostStabilizerInput,
   EditPostStabilizerOutput,
@@ -56,6 +58,7 @@ import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryReposit
 import { PostPCBQueryRepository } from '@src/apps/post/PostPCBQueryRepository';
 import { PostPlateQueryRepository } from '@src/apps/post/PostPlateQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
+import { PostSettingQueryRepository } from '@src/apps/post/PostSettingQueryRepository';
 import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
 import { PostVideoQueryRepository } from '@src/apps/post/PostVideoQueryRepository';
@@ -96,6 +99,9 @@ export class PostService {
     @InjectRepository(PostVideoEntity)
     private readonly postVideoRepository: Repository<PostVideoEntity>,
     private readonly postVideoQueryRepository: PostVideoQueryRepository,
+    @InjectRepository(PostSettingEntity)
+    private readonly postSettingRepository: Repository<PostSettingEntity>,
+    private readonly postSettingQueryRepository: PostSettingQueryRepository,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
@@ -755,6 +761,34 @@ export class PostService {
     return {
       ok: true,
       deletedPostId: postId,
+    };
+  }
+
+  async editPostSetting(
+    me: UserEntity,
+    { postId }: EditPostSettingParam,
+    { isPublished }: EditPostSettingInput,
+  ): Promise<EditPostSettingOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    const postSetting = await this.postSettingQueryRepository.findPostSettingByPostId(postId);
+    await this.postSettingRepository.save({
+      ...(postSetting && { id: postSetting.id }),
+      isPublished,
+      post: {
+        id: postId,
+      },
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
     };
   }
 }

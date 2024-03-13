@@ -23,6 +23,7 @@ import {
 } from '@src/apps/post/dto/EditPostKeycapOnLayout.dto';
 import { EditPostPCBInput, EditPostPCBOutput, EditPostPCBParam } from '@src/apps/post/dto/EditPostPCB.dto';
 import { EditPostPlateInput, EditPostPlateOutput, EditPostPlateParam } from '@src/apps/post/dto/EditPostPlate.dto';
+import { EditPostSettingInput, EditPostSettingOutput, EditPostSettingParam } from '@src/apps/post/dto/EditPostSetting.dto';
 import {
   EditPostStabilizerInput,
   EditPostStabilizerOutput,
@@ -204,5 +205,15 @@ export class PostController {
     @Param(ValidationPipe) deletePostVideoParam: DeletePostVideoParam,
   ): Promise<DeletePostVideoOutput> {
     return await this.postService.deletePostVideo(authUser, deletePostVideoParam);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/setting')
+  async editPostSetting(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostSettingParam: EditPostSettingParam,
+    @Body(ValidationPipe) editPostSettingInput: EditPostSettingInput,
+  ): Promise<EditPostSettingOutput> {
+    return await this.postService.editPostSetting(authUser, editPostSettingParam, editPostSettingInput);
   }
 }

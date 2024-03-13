@@ -73,6 +73,8 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'video.youtubeVideoUrl',
         'video.youtubeVideoId',
         'video.remark',
+        'setting.id',
+        'setting.isPublished',
       ])
       .leftJoin('post.postedUser', 'user')
       .leftJoin('post.postImages', 'image')
@@ -85,6 +87,7 @@ export class PostQueryRepository extends Repository<PostEntity> {
       .leftJoin('post.postPlate', 'plate')
       .leftJoin('post.postFoam', 'foam')
       .leftJoin('post.postVideo', 'video')
+      .leftJoin('post.postSetting', 'setting')
       .where('post.id = :postId', { postId })
       .getOne();
 
