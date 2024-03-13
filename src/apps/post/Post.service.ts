@@ -7,6 +7,7 @@ import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.enti
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
+import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { PostKeyboardDefinitionType, PostKeyboardLayoutKey } from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
@@ -26,6 +27,7 @@ import {
   EditPostKeycapOnLayoutOutput,
   EditPostKeycapOnLayoutParam,
 } from '@src/apps/post/dto/EditPostKeycapOnLayout.dto';
+import { EditPostPCBInput, EditPostPCBOutput, EditPostPCBParam } from '@src/apps/post/dto/EditPostPCB.dto';
 import {
   EditPostStabilizerInput,
   EditPostStabilizerOutput,
@@ -42,6 +44,7 @@ import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostB
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
 import { PostKeyboardDefinitionQueryRepository } from '@src/apps/post/PostKeyboardDefinitionQueryRepository';
 import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryRepository';
+import { PostPCBQueryRepository } from '@src/apps/post/PostPCBQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
 import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
@@ -70,6 +73,9 @@ export class PostService {
     @InjectRepository(PostKeyboardDefinitionEntity)
     private readonly postKeyboardDefinitionRepository: Repository<PostKeyboardDefinitionEntity>,
     private readonly postKeyboardDefinitionQueryRepository: PostKeyboardDefinitionQueryRepository,
+    @InjectRepository(PostPCBEntity)
+    private readonly postPCBRepository: Repository<PostPCBEntity>,
+    private readonly postPCBQueryRepository: PostPCBQueryRepository,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
@@ -544,6 +550,39 @@ export class PostService {
     await this.postKeyboardDefinitionRepository.save({
       id: definition.id,
       keyboardDefinition: editDefinition,
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
+    };
+  }
+
+  async editPostPCB(
+    me: UserEntity,
+    { postId }: EditPostPCBParam,
+    { pcbName, pcbThickness, pcbType, isRgbPcb, isFlexCutPcb, remark }: EditPostPCBInput,
+  ): Promise<EditPostPCBOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    const postPCB = await this.postPCBQueryRepository.findPostPCBByPostId(postId);
+    await this.postPCBRepository.save({
+      ...(postPCB && { id: postPCB.id }),
+      pcbName,
+      pcbType,
+      isRgbPcb,
+      isFlexCutPcb,
+      ...(pcbThickness && { pcbThickness }),
+      ...(remark && { remark }),
+      post: {
+        id: postId,
+      },
     });
 
     return {

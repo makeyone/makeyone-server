@@ -50,6 +50,13 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'keyboardDefinition.definitionName',
         'keyboardDefinition.keyboardDefinition',
         'keyboardDefinition.layoutOptionKeys',
+        'pcb.id',
+        'pcb.pcbName',
+        'pcb.pcbThickness',
+        'pcb.pcbType',
+        'pcb.isFlexCutPcb',
+        'pcb.isRgbPcb',
+        'pcb.remark',
       ])
       .leftJoin('post.postedUser', 'user')
       .leftJoin('post.postImages', 'image')
@@ -58,6 +65,7 @@ export class PostQueryRepository extends Repository<PostEntity> {
       .leftJoin('post.postKeycaps', 'keycap')
       .leftJoin('post.postStabilizers', 'stabilizer')
       .leftJoin('post.postKeyboardDefinition', 'keyboardDefinition')
+      .leftJoin('post.postPCB', 'pcb')
       .where('post.id = :postId', { postId })
       .getOne();
 

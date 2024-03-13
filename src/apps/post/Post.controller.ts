@@ -18,6 +18,7 @@ import {
   EditPostKeycapOnLayoutOutput,
   EditPostKeycapOnLayoutParam,
 } from '@src/apps/post/dto/EditPostKeycapOnLayout.dto';
+import { EditPostPCBInput, EditPostPCBOutput, EditPostPCBParam } from '@src/apps/post/dto/EditPostPCB.dto';
 import {
   EditPostStabilizerInput,
   EditPostStabilizerOutput,
@@ -140,5 +141,15 @@ export class PostController {
     @Body(ValidationPipe) editPostKeycapOnLayoutInput: EditPostKeycapOnLayoutInput,
   ): Promise<EditPostKeycapOnLayoutOutput> {
     return await this.postService.editPostKeycapOnLayout(authUser, editPostKeycapOnLayoutParam, editPostKeycapOnLayoutInput);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/pcb')
+  async editPostPCB(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostPCBParam: EditPostPCBParam,
+    @Body(ValidationPipe) editPostPCBInput: EditPostPCBInput,
+  ): Promise<EditPostPCBOutput> {
+    return await this.postService.editPostPCB(authUser, editPostPCBParam, editPostPCBInput);
   }
 }

@@ -6,6 +6,7 @@ import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.enti
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
+import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { EntityModule } from '@src/libs/entity/Entity.module';
@@ -16,6 +17,7 @@ import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepos
 import { PostImageQueryRepository } from '@src/apps/post/PostImageQueryRepository';
 import { PostKeyboardDefinitionQueryRepository } from '@src/apps/post/PostKeyboardDefinitionQueryRepository';
 import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryRepository';
+import { PostPCBQueryRepository } from '@src/apps/post/PostPCBQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
 import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
@@ -30,6 +32,7 @@ import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryReposit
       PostKeycapEntity,
       PostStabilizerEntity,
       PostKeyboardDefinitionEntity,
+      PostPCBEntity,
     ]),
     EntityModule.forCustomRepository([
       PostQueryRepository,
@@ -39,6 +42,7 @@ import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryReposit
       PostKeycapQueryRepository,
       PostStabilizerQueryRepository,
       PostKeyboardDefinitionQueryRepository,
+      PostPCBQueryRepository,
     ]),
   ],
   controllers: [PostController],
