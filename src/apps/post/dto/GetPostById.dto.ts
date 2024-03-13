@@ -11,6 +11,7 @@ import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
 import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
+import { PostVideoEntity } from '@src/libs/entity/domain/post/PostVideo.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 export class GetPostByIdParam {
@@ -53,6 +54,7 @@ type PostKeyboardDefinition = Pick<
 type PostPCB = Pick<PostPCBEntity, 'id' | 'pcbName' | 'pcbThickness' | 'pcbType' | 'isFlexCutPcb' | 'isRgbPcb' | 'remark'>;
 type PostPlate = Pick<PostPlateEntity, 'id' | 'plateName' | 'plateTexture' | 'isHalfPlate' | 'isFlexCutPlate' | 'remark'>;
 type PostFoam = Pick<PostFoamEntity, 'id' | 'plateBetweenPCBFoam' | 'bottomSwitchPEFoam' | 'bottomFoam' | 'tapeMod' | 'remark'>;
+type PostVideo = Pick<PostVideoEntity, 'id' | 'youtubeVideoUrl' | 'youtubeVideoId' | 'remark'>;
 
 export type GetPostById = Post & {
   postedUser: User;
@@ -65,6 +67,7 @@ export type GetPostById = Post & {
   postPCB: PostPCB | null;
   postPlate: PostPlate | null;
   postFoam: PostFoam | null;
+  postVideo: PostVideo | null;
 };
 
 export class GetPostByIdOutput extends CoreOutput {

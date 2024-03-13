@@ -69,6 +69,10 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'foam.bottomFoam',
         'foam.tapeMod',
         'foam.remark',
+        'video.id',
+        'video.youtubeVideoUrl',
+        'video.youtubeVideoId',
+        'video.remark',
       ])
       .leftJoin('post.postedUser', 'user')
       .leftJoin('post.postImages', 'image')
@@ -80,6 +84,7 @@ export class PostQueryRepository extends Repository<PostEntity> {
       .leftJoin('post.postPCB', 'pcb')
       .leftJoin('post.postPlate', 'plate')
       .leftJoin('post.postFoam', 'foam')
+      .leftJoin('post.postVideo', 'video')
       .where('post.id = :postId', { postId })
       .getOne();
 

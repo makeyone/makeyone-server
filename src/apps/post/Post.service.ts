@@ -12,12 +12,14 @@ import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
 import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
+import { PostVideoEntity } from '@src/libs/entity/domain/post/PostVideo.entity';
 import { PostKeyboardDefinitionType, PostKeyboardLayoutKey } from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { DeletePostPlateOutput, DeletePostPlateParam } from '@src/apps/post/dto/DeletePostPlate.dto';
-import { EditPostFoamInput, EditPostFoamParam } from '@src/apps/post/dto/EditPostFoam.dto';
+import { DeletePostVideoOutput, DeletePostVideoParam } from '@src/apps/post/dto/DeletePostVideo.dto';
+import { EditPostFoamInput, EditPostFoamOutput, EditPostFoamParam } from '@src/apps/post/dto/EditPostFoam.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import {
@@ -45,6 +47,7 @@ import {
   EditPostSwitchOnLayoutParam,
 } from '@src/apps/post/dto/EditPostSwitchOnLayout.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
+import { EditPostVideoInput, EditPostVideoOutput, EditPostVideoParam } from '@src/apps/post/dto/EditPostVideo.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostFoamQueryRepository } from '@src/apps/post/PostFoamQueryRepository';
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
@@ -55,6 +58,7 @@ import { PostPlateQueryRepository } from '@src/apps/post/PostPlateQueryRepositor
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
 import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
+import { PostVideoQueryRepository } from '@src/apps/post/PostVideoQueryRepository';
 
 @Injectable()
 export class PostService {
@@ -89,6 +93,9 @@ export class PostService {
     @InjectRepository(PostFoamEntity)
     private readonly postFoamRepository: Repository<PostFoamEntity>,
     private readonly postFoamQueryRepository: PostFoamQueryRepository,
+    @InjectRepository(PostVideoEntity)
+    private readonly postVideoRepository: Repository<PostVideoEntity>,
+    private readonly postVideoQueryRepository: PostVideoQueryRepository,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
@@ -660,7 +667,7 @@ export class PostService {
     me: UserEntity,
     { postId }: EditPostFoamParam,
     { plateBetweenPCBFoam, bottomSwitchPEFoam, bottomFoam, tapeMod, remark }: EditPostFoamInput,
-  ): Promise<EditPostPlateOutput> {
+  ): Promise<EditPostFoamOutput> {
     const post = await this.postQueryRepository.findPostById(postId);
     if (!post) {
       throw new NotFoundException('POST_NOT_FOUND');
@@ -685,6 +692,69 @@ export class PostService {
     return {
       ok: true,
       editedPostId: postId,
+    };
+  }
+
+  async editPostVideo(
+    me: UserEntity,
+    { postId }: EditPostVideoParam,
+    { youtubeVideoUrl, remark }: EditPostVideoInput,
+  ): Promise<EditPostVideoOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    // 쇼츠 비디오 대응
+    let videoUrl = youtubeVideoUrl || '';
+    if (videoUrl.includes('youtube.com/shorts')) {
+      videoUrl = videoUrl.replace('/shorts/', '/watch?v=');
+    }
+    const youtubeVideoUrlRegExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const youtubeVideoUrlMatch = videoUrl.match(youtubeVideoUrlRegExp);
+    const youtubeVideoId = youtubeVideoUrlMatch && youtubeVideoUrlMatch[7].length === 11 ? youtubeVideoUrlMatch[7] : '';
+
+    if (youtubeVideoId === '') {
+      throw new UnauthorizedException('INVALID_YOUTUBE_VIDEO_URL');
+    }
+
+    const postVideo = await this.postVideoQueryRepository.findPostVideoByPostId(postId);
+    await this.postVideoRepository.save({
+      ...(postVideo && { id: postVideo.id }),
+      youtubeVideoUrl,
+      youtubeVideoId: youtubeVideoId,
+      remark: remark || null,
+      post: {
+        id: postId,
+      },
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
+    };
+  }
+
+  async deletePostVideo(me: UserEntity, { postId }: DeletePostVideoParam): Promise<DeletePostVideoOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    const postVideo = await this.postVideoQueryRepository.findPostVideoByPostId(postId);
+    if (postVideo) {
+      await this.postVideoRepository.delete(postVideo.id);
+    }
+
+    return {
+      ok: true,
+      deletedPostId: postId,
     };
   }
 }

@@ -10,6 +10,7 @@ import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
 import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
+import { PostVideoEntity } from '@src/libs/entity/domain/post/PostVideo.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 @Entity({ name: 'post' })
@@ -48,4 +49,7 @@ export class PostEntity extends IncludeSoftDeleteCoreEntity {
 
   @OneToOne(() => PostFoamEntity, (postFoam) => postFoam.post)
   postFoam: PostFoamEntity;
+
+  @OneToOne(() => PostVideoEntity, (postVideo) => postVideo.post)
+  postVideo: PostVideoEntity;
 }

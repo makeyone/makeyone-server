@@ -6,6 +6,7 @@ import { AuthUser } from '@src/apps/auth/decorators/AuthUser.decorator';
 import { RoleGuard } from '@src/apps/auth/decorators/RoleGuard.decorator';
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { DeletePostPlateOutput, DeletePostPlateParam } from '@src/apps/post/dto/DeletePostPlate.dto';
+import { DeletePostVideoOutput, DeletePostVideoParam } from '@src/apps/post/dto/DeletePostVideo.dto';
 import { EditPostFoamInput, EditPostFoamOutput, EditPostFoamParam } from '@src/apps/post/dto/EditPostFoam.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
@@ -34,6 +35,7 @@ import {
   EditPostSwitchOnLayoutParam,
 } from '@src/apps/post/dto/EditPostSwitchOnLayout.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
+import { EditPostVideoInput, EditPostVideoOutput, EditPostVideoParam } from '@src/apps/post/dto/EditPostVideo.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
 import { PostService } from '@src/apps/post/Post.service';
 
@@ -183,5 +185,24 @@ export class PostController {
     @Body(ValidationPipe) editPostFoamInput: EditPostFoamInput,
   ): Promise<EditPostFoamOutput> {
     return await this.postService.editPostFoam(authUser, editPostFoamParam, editPostFoamInput);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/video')
+  async editPostVideo(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostVideoParam: EditPostVideoParam,
+    @Body(ValidationPipe) editPostVideoInput: EditPostVideoInput,
+  ): Promise<EditPostVideoOutput> {
+    return await this.postService.editPostVideo(authUser, editPostVideoParam, editPostVideoInput);
+  }
+
+  @RoleGuard(['ANY'])
+  @Delete('/:postId/video')
+  async deletePostVideo(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) deletePostVideoParam: DeletePostVideoParam,
+  ): Promise<DeletePostVideoOutput> {
+    return await this.postService.deletePostVideo(authUser, deletePostVideoParam);
   }
 }

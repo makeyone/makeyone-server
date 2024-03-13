@@ -11,6 +11,7 @@ import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
 import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
+import { PostVideoEntity } from '@src/libs/entity/domain/post/PostVideo.entity';
 import { EntityModule } from '@src/libs/entity/Entity.module';
 
 import { PostController } from '@src/apps/post/Post.controller';
@@ -25,6 +26,7 @@ import { PostPlateQueryRepository } from '@src/apps/post/PostPlateQueryRepositor
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
 import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
+import { PostVideoQueryRepository } from '@src/apps/post/PostVideoQueryRepository';
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryReposit
       PostPCBEntity,
       PostPlateEntity,
       PostFoamEntity,
+      PostVideoEntity,
     ]),
     EntityModule.forCustomRepository([
       PostQueryRepository,
@@ -51,6 +54,7 @@ import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryReposit
       PostPCBQueryRepository,
       PostPlateQueryRepository,
       PostFoamQueryRepository,
+      PostVideoQueryRepository,
     ]),
   ],
   controllers: [PostController],
