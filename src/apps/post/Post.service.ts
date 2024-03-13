@@ -578,8 +578,8 @@ export class PostService {
       pcbType,
       isRgbPcb,
       isFlexCutPcb,
-      ...(pcbThickness && { pcbThickness }),
-      ...(remark && { remark }),
+      pcbThickness: pcbThickness || null,
+      remark: remark || null,
       post: {
         id: postId,
       },
