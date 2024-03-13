@@ -8,12 +8,14 @@ import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
+import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { PostKeyboardDefinitionType, PostKeyboardLayoutKey } from '@src/libs/entity/domain/post/types/PostKeyboardLayout.type';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
+import { DeletePostPlateOutput, DeletePostPlateParam } from '@src/apps/post/dto/DeletePostPlate.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import {
@@ -28,6 +30,7 @@ import {
   EditPostKeycapOnLayoutParam,
 } from '@src/apps/post/dto/EditPostKeycapOnLayout.dto';
 import { EditPostPCBInput, EditPostPCBOutput, EditPostPCBParam } from '@src/apps/post/dto/EditPostPCB.dto';
+import { EditPostPlateInput, EditPostPlateOutput, EditPostPlateParam } from '@src/apps/post/dto/EditPostPlate.dto';
 import {
   EditPostStabilizerInput,
   EditPostStabilizerOutput,
@@ -45,6 +48,7 @@ import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepos
 import { PostKeyboardDefinitionQueryRepository } from '@src/apps/post/PostKeyboardDefinitionQueryRepository';
 import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryRepository';
 import { PostPCBQueryRepository } from '@src/apps/post/PostPCBQueryRepository';
+import { PostPlateQueryRepository } from '@src/apps/post/PostPlateQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
 import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
@@ -76,6 +80,9 @@ export class PostService {
     @InjectRepository(PostPCBEntity)
     private readonly postPCBRepository: Repository<PostPCBEntity>,
     private readonly postPCBQueryRepository: PostPCBQueryRepository,
+    @InjectRepository(PostPlateEntity)
+    private readonly postPlateRepository: Repository<PostPlateEntity>,
+    private readonly postPlateQueryRepository: PostPlateQueryRepository,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
@@ -588,6 +595,58 @@ export class PostService {
     return {
       ok: true,
       editedPostId: postId,
+    };
+  }
+
+  async editPostPlate(
+    me: UserEntity,
+    { postId }: EditPostPlateParam,
+    { plateName, plateTexture, isFlexCutPlate, isHalfPlate, remark }: EditPostPlateInput,
+  ): Promise<EditPostPlateOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    const postPlate = await this.postPlateQueryRepository.findPostPlateByPostId(postId);
+    await this.postPlateRepository.save({
+      ...(postPlate && { id: postPlate.id }),
+      plateName,
+      plateTexture,
+      isFlexCutPlate,
+      isHalfPlate,
+      remark: remark || null,
+      post: {
+        id: postId,
+      },
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
+    };
+  }
+
+  async deletePostPlate(me: UserEntity, { postId }: DeletePostPlateParam): Promise<DeletePostPlateOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    const postPlate = await this.postPlateQueryRepository.findPostPlateByPostId(postId);
+    if (postPlate) {
+      await this.postPlateRepository.delete(postPlate.id);
+    }
+
+    return {
+      ok: true,
+      deletedPostId: postId,
     };
   }
 }

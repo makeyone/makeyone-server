@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
 
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { AuthUser } from '@src/apps/auth/decorators/AuthUser.decorator';
 import { RoleGuard } from '@src/apps/auth/decorators/RoleGuard.decorator';
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
+import { DeletePostPlateOutput, DeletePostPlateParam } from '@src/apps/post/dto/DeletePostPlate.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import {
@@ -19,6 +20,7 @@ import {
   EditPostKeycapOnLayoutParam,
 } from '@src/apps/post/dto/EditPostKeycapOnLayout.dto';
 import { EditPostPCBInput, EditPostPCBOutput, EditPostPCBParam } from '@src/apps/post/dto/EditPostPCB.dto';
+import { EditPostPlateInput, EditPostPlateOutput, EditPostPlateParam } from '@src/apps/post/dto/EditPostPlate.dto';
 import {
   EditPostStabilizerInput,
   EditPostStabilizerOutput,
@@ -151,5 +153,24 @@ export class PostController {
     @Body(ValidationPipe) editPostPCBInput: EditPostPCBInput,
   ): Promise<EditPostPCBOutput> {
     return await this.postService.editPostPCB(authUser, editPostPCBParam, editPostPCBInput);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/plate')
+  async editPostPlate(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostPlateParam: EditPostPlateParam,
+    @Body(ValidationPipe) editPostPlateInput: EditPostPlateInput,
+  ): Promise<EditPostPlateOutput> {
+    return await this.postService.editPostPlate(authUser, editPostPlateParam, editPostPlateInput);
+  }
+
+  @RoleGuard(['ANY'])
+  @Delete('/:postId/plate')
+  async deletePostPlate(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) deletePostPlateParam: DeletePostPlateParam,
+  ): Promise<DeletePostPlateOutput> {
+    return await this.postService.deletePostPlate(authUser, deletePostPlateParam);
   }
 }

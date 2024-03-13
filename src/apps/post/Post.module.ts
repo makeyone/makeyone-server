@@ -7,6 +7,7 @@ import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
+import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { EntityModule } from '@src/libs/entity/Entity.module';
@@ -18,6 +19,7 @@ import { PostImageQueryRepository } from '@src/apps/post/PostImageQueryRepositor
 import { PostKeyboardDefinitionQueryRepository } from '@src/apps/post/PostKeyboardDefinitionQueryRepository';
 import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryRepository';
 import { PostPCBQueryRepository } from '@src/apps/post/PostPCBQueryRepository';
+import { PostPlateQueryRepository } from '@src/apps/post/PostPlateQueryRepository';
 import { PostQueryRepository } from '@src/apps/post/PostQueryRepository';
 import { PostStabilizerQueryRepository } from '@src/apps/post/PostStabilizerQueryRepository';
 import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryRepository';
@@ -33,6 +35,7 @@ import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryReposit
       PostStabilizerEntity,
       PostKeyboardDefinitionEntity,
       PostPCBEntity,
+      PostPlateEntity,
     ]),
     EntityModule.forCustomRepository([
       PostQueryRepository,
@@ -43,6 +46,7 @@ import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryReposit
       PostStabilizerQueryRepository,
       PostKeyboardDefinitionQueryRepository,
       PostPCBQueryRepository,
+      PostPlateQueryRepository,
     ]),
   ],
   controllers: [PostController],

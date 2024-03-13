@@ -7,6 +7,7 @@ import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
 import { PostKeycapEntity } from '@src/libs/entity/domain/post/PostKeycap.entity';
 import { PostPCBEntity } from '@src/libs/entity/domain/post/PostPCB.entity';
+import { PostPlateEntity } from '@src/libs/entity/domain/post/PostPlate.entity';
 import { PostStabilizerEntity } from '@src/libs/entity/domain/post/PostStabilizer.entity';
 import { PostSwitchEntity } from '@src/libs/entity/domain/post/PostSwitch.entity';
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
@@ -49,6 +50,7 @@ type PostKeyboardDefinition = Pick<
   'id' | 'definitionName' | 'keyboardDefinition' | 'layoutOptionKeys'
 >;
 type PostPCB = Pick<PostPCBEntity, 'id' | 'pcbName' | 'pcbThickness' | 'pcbType' | 'isFlexCutPcb' | 'isRgbPcb' | 'remark'>;
+type PostPlate = Pick<PostPlateEntity, 'id' | 'plateName' | 'plateTexture' | 'isHalfPlate' | 'isFlexCutPlate' | 'remark'>;
 
 export type GetPostById = Post & {
   postedUser: User;
@@ -59,6 +61,7 @@ export type GetPostById = Post & {
   postStabilizers: PostStabilizer[];
   postKeyboardDefinition: PostKeyboardDefinition;
   postPCB: PostPCB | null;
+  postPlate: PostPlate | null;
 };
 
 export class GetPostByIdOutput extends CoreOutput {

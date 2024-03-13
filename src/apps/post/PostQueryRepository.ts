@@ -57,6 +57,12 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'pcb.isFlexCutPcb',
         'pcb.isRgbPcb',
         'pcb.remark',
+        'plate.id',
+        'plate.plateName',
+        'plate.plateTexture',
+        'plate.isHalfPlate',
+        'plate.isFlexCutPlate',
+        'plate.remark',
       ])
       .leftJoin('post.postedUser', 'user')
       .leftJoin('post.postImages', 'image')
@@ -66,6 +72,7 @@ export class PostQueryRepository extends Repository<PostEntity> {
       .leftJoin('post.postStabilizers', 'stabilizer')
       .leftJoin('post.postKeyboardDefinition', 'keyboardDefinition')
       .leftJoin('post.postPCB', 'pcb')
+      .leftJoin('post.postPlate', 'plate')
       .where('post.id = :postId', { postId })
       .getOne();
 
