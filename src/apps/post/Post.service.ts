@@ -669,8 +669,6 @@ export class PostService {
       throw new UnauthorizedException('UNAUTHORIZED_POST');
     }
 
-    console.log(remark);
-
     const postFoam = await this.postFoamQueryRepository.findPostFoamByPostId(postId);
     await this.postFoamRepository.save({
       ...(postFoam && { id: postFoam.id }),
