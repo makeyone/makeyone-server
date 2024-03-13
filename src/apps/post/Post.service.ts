@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
+import { PostFoamEntity } from '@src/libs/entity/domain/post/PostFoam.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
@@ -16,6 +17,7 @@ import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { DeletePostPlateOutput, DeletePostPlateParam } from '@src/apps/post/dto/DeletePostPlate.dto';
+import { EditPostFoamInput, EditPostFoamParam } from '@src/apps/post/dto/EditPostFoam.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import {
@@ -44,6 +46,7 @@ import {
 } from '@src/apps/post/dto/EditPostSwitchOnLayout.dto';
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
+import { PostFoamQueryRepository } from '@src/apps/post/PostFoamQueryRepository';
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
 import { PostKeyboardDefinitionQueryRepository } from '@src/apps/post/PostKeyboardDefinitionQueryRepository';
 import { PostKeycapQueryRepository } from '@src/apps/post/PostKeycapQueryRepository';
@@ -83,6 +86,9 @@ export class PostService {
     @InjectRepository(PostPlateEntity)
     private readonly postPlateRepository: Repository<PostPlateEntity>,
     private readonly postPlateQueryRepository: PostPlateQueryRepository,
+    @InjectRepository(PostFoamEntity)
+    private readonly postFoamRepository: Repository<PostFoamEntity>,
+    private readonly postFoamQueryRepository: PostFoamQueryRepository,
   ) {}
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
@@ -647,6 +653,40 @@ export class PostService {
     return {
       ok: true,
       deletedPostId: postId,
+    };
+  }
+
+  async editPostFoam(
+    me: UserEntity,
+    { postId }: EditPostFoamParam,
+    { plateBetweenPCBFoam, bottomSwitchPEFoam, bottomFoam, tapeMod, remark }: EditPostFoamInput,
+  ): Promise<EditPostPlateOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    console.log(remark);
+
+    const postFoam = await this.postFoamQueryRepository.findPostFoamByPostId(postId);
+    await this.postFoamRepository.save({
+      ...(postFoam && { id: postFoam.id }),
+      plateBetweenPCBFoam,
+      bottomSwitchPEFoam,
+      bottomFoam,
+      tapeMod,
+      remark: remark || null,
+      post: {
+        id: postId,
+      },
+    });
+
+    return {
+      ok: true,
+      editedPostId: postId,
     };
   }
 }

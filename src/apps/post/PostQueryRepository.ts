@@ -63,6 +63,12 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'plate.isHalfPlate',
         'plate.isFlexCutPlate',
         'plate.remark',
+        'foam.id',
+        'foam.plateBetweenPCBFoam',
+        'foam.bottomSwitchPEFoam',
+        'foam.bottomFoam',
+        'foam.tapeMod',
+        'foam.remark',
       ])
       .leftJoin('post.postedUser', 'user')
       .leftJoin('post.postImages', 'image')
@@ -73,6 +79,7 @@ export class PostQueryRepository extends Repository<PostEntity> {
       .leftJoin('post.postKeyboardDefinition', 'keyboardDefinition')
       .leftJoin('post.postPCB', 'pcb')
       .leftJoin('post.postPlate', 'plate')
+      .leftJoin('post.postFoam', 'foam')
       .where('post.id = :postId', { postId })
       .getOne();
 

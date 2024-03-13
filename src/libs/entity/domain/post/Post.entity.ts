@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 
 import { IncludeSoftDeleteCoreEntity } from '@src/libs/entity/domain/common/Core.entity';
+import { PostFoamEntity } from '@src/libs/entity/domain/post/PostFoam.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
@@ -44,4 +45,7 @@ export class PostEntity extends IncludeSoftDeleteCoreEntity {
 
   @OneToOne(() => PostPlateEntity, (postPlate) => postPlate.post)
   postPlate: PostPlateEntity;
+
+  @OneToOne(() => PostFoamEntity, (postFoam) => postFoam.post)
+  postFoam: PostFoamEntity;
 }

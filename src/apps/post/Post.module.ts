@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
+import { PostFoamEntity } from '@src/libs/entity/domain/post/PostFoam.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
@@ -14,6 +15,7 @@ import { EntityModule } from '@src/libs/entity/Entity.module';
 
 import { PostController } from '@src/apps/post/Post.controller';
 import { PostService } from '@src/apps/post/Post.service';
+import { PostFoamQueryRepository } from '@src/apps/post/PostFoamQueryRepository';
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
 import { PostImageQueryRepository } from '@src/apps/post/PostImageQueryRepository';
 import { PostKeyboardDefinitionQueryRepository } from '@src/apps/post/PostKeyboardDefinitionQueryRepository';
@@ -36,6 +38,7 @@ import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryReposit
       PostKeyboardDefinitionEntity,
       PostPCBEntity,
       PostPlateEntity,
+      PostFoamEntity,
     ]),
     EntityModule.forCustomRepository([
       PostQueryRepository,
@@ -47,6 +50,7 @@ import { PostSwitchQueryRepository } from '@src/apps/post/PostSwitchQueryReposit
       PostKeyboardDefinitionQueryRepository,
       PostPCBQueryRepository,
       PostPlateQueryRepository,
+      PostFoamQueryRepository,
     ]),
   ],
   controllers: [PostController],

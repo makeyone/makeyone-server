@@ -6,6 +6,7 @@ import { AuthUser } from '@src/apps/auth/decorators/AuthUser.decorator';
 import { RoleGuard } from '@src/apps/auth/decorators/RoleGuard.decorator';
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { DeletePostPlateOutput, DeletePostPlateParam } from '@src/apps/post/dto/DeletePostPlate.dto';
+import { EditPostFoamInput, EditPostFoamOutput, EditPostFoamParam } from '@src/apps/post/dto/EditPostFoam.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
 import {
@@ -172,5 +173,15 @@ export class PostController {
     @Param(ValidationPipe) deletePostPlateParam: DeletePostPlateParam,
   ): Promise<DeletePostPlateOutput> {
     return await this.postService.deletePostPlate(authUser, deletePostPlateParam);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/foam')
+  async editPostFoam(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostFoamParam: EditPostFoamParam,
+    @Body(ValidationPipe) editPostFoamInput: EditPostFoamInput,
+  ): Promise<EditPostFoamOutput> {
+    return await this.postService.editPostFoam(authUser, editPostFoamParam, editPostFoamInput);
   }
 }

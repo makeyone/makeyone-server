@@ -2,6 +2,7 @@ import { IsNumber } from 'class-validator';
 
 import { CoreOutput } from '@src/libs/entity/domain/common/Core.dto';
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
+import { PostFoamEntity } from '@src/libs/entity/domain/post/PostFoam.entity';
 import { PostHousingEntity } from '@src/libs/entity/domain/post/PostHousing.entity';
 import { PostImageEntity } from '@src/libs/entity/domain/post/PostImage.entity';
 import { PostKeyboardDefinitionEntity } from '@src/libs/entity/domain/post/PostKeyboardDefinition.entity';
@@ -51,6 +52,7 @@ type PostKeyboardDefinition = Pick<
 >;
 type PostPCB = Pick<PostPCBEntity, 'id' | 'pcbName' | 'pcbThickness' | 'pcbType' | 'isFlexCutPcb' | 'isRgbPcb' | 'remark'>;
 type PostPlate = Pick<PostPlateEntity, 'id' | 'plateName' | 'plateTexture' | 'isHalfPlate' | 'isFlexCutPlate' | 'remark'>;
+type PostFoam = Pick<PostFoamEntity, 'id' | 'plateBetweenPCBFoam' | 'bottomSwitchPEFoam' | 'bottomFoam' | 'tapeMod' | 'remark'>;
 
 export type GetPostById = Post & {
   postedUser: User;
@@ -62,6 +64,7 @@ export type GetPostById = Post & {
   postKeyboardDefinition: PostKeyboardDefinition;
   postPCB: PostPCB | null;
   postPlate: PostPlate | null;
+  postFoam: PostFoam | null;
 };
 
 export class GetPostByIdOutput extends CoreOutput {
