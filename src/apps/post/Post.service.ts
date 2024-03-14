@@ -20,6 +20,7 @@ import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { DeletePostPlateOutput, DeletePostPlateParam } from '@src/apps/post/dto/DeletePostPlate.dto';
 import { DeletePostVideoOutput, DeletePostVideoParam } from '@src/apps/post/dto/DeletePostVideo.dto';
+import { EditPostContentInput, EditPostContentOutput, EditPostContentParam } from '@src/apps/post/dto/EditPostContent.dto';
 import { EditPostFoamInput, EditPostFoamOutput, EditPostFoamParam } from '@src/apps/post/dto/EditPostFoam.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
@@ -761,6 +762,27 @@ export class PostService {
     return {
       ok: true,
       deletedPostId: postId,
+    };
+  }
+
+  async editPostContent(
+    me: UserEntity,
+    { postId }: EditPostContentParam,
+    { postContent }: EditPostContentInput,
+  ): Promise<EditPostContentOutput> {
+    const post = await this.postQueryRepository.findPostById(postId);
+    if (!post) {
+      throw new NotFoundException('POST_NOT_FOUND');
+    }
+    if (post.postedUser.id !== me.id && me.role === 'CLIENT') {
+      throw new UnauthorizedException('UNAUTHORIZED_POST');
+    }
+
+    await this.postRepository.update(postId, { postContent: postContent || null });
+
+    return {
+      ok: true,
+      editedPostId: postId,
     };
   }
 

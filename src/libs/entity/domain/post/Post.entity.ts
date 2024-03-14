@@ -19,6 +19,9 @@ export class PostEntity extends IncludeSoftDeleteCoreEntity {
   @Column({ type: 'varchar', length: 200, nullable: true })
   postTitle: string | null;
 
+  @Column({ type: 'longtext', nullable: true })
+  postContent: string | null;
+
   @ManyToOne(() => UserEntity, (user) => user.posts, {
     onDelete: 'NO ACTION',
   })

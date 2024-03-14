@@ -7,6 +7,7 @@ import { RoleGuard } from '@src/apps/auth/decorators/RoleGuard.decorator';
 import { CreatePostOutput } from '@src/apps/post/dto/CreatePost.dto';
 import { DeletePostPlateOutput, DeletePostPlateParam } from '@src/apps/post/dto/DeletePostPlate.dto';
 import { DeletePostVideoOutput, DeletePostVideoParam } from '@src/apps/post/dto/DeletePostVideo.dto';
+import { EditPostContentInput, EditPostContentOutput, EditPostContentParam } from '@src/apps/post/dto/EditPostContent.dto';
 import { EditPostFoamInput, EditPostFoamOutput, EditPostFoamParam } from '@src/apps/post/dto/EditPostFoam.dto';
 import { EditPostHousingInput, EditPostHousingOutput, EditPostHousingParam } from '@src/apps/post/dto/EditPostHousing.dto';
 import { EditPostImagesInput, EditPostImagesOutput, EditPostImagesParam } from '@src/apps/post/dto/EditPostImages.dto';
@@ -205,6 +206,16 @@ export class PostController {
     @Param(ValidationPipe) deletePostVideoParam: DeletePostVideoParam,
   ): Promise<DeletePostVideoOutput> {
     return await this.postService.deletePostVideo(authUser, deletePostVideoParam);
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/:postId/content')
+  async editPostContent(
+    @AuthUser() authUser: UserEntity,
+    @Param(ValidationPipe) editPostContentParam: EditPostContentParam,
+    @Body(ValidationPipe) editPostContentInput: EditPostContentInput,
+  ): Promise<EditPostContentOutput> {
+    return await this.postService.editPostContent(authUser, editPostContentParam, editPostContentInput);
   }
 
   @RoleGuard(['ANY'])

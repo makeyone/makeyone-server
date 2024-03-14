@@ -13,6 +13,7 @@ export class PostQueryRepository extends Repository<PostEntity> {
         'post.id',
         'post.createdAt',
         'post.postTitle',
+        'post.postContent',
         'user.id',
         'user.profileImg',
         'user.nickname',

@@ -20,7 +20,7 @@ export class GetPostByIdParam {
   postId: number;
 }
 
-type Post = Pick<PostEntity, 'id' | 'createdAt' | 'postTitle'>;
+type Post = Pick<PostEntity, 'id' | 'createdAt' | 'postTitle' | 'postContent'>;
 type User = Pick<UserEntity, 'id' | 'nickname' | 'profileImg'>;
 type PostImage = Pick<PostImageEntity, 'id' | 'imageUrl'>;
 type PostHousing = Pick<
