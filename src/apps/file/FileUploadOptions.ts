@@ -16,7 +16,7 @@ AWS.config.update({
   region: process.env.AWS_S3_REGION,
 });
 
-const maxFileSize = 10 * 1024 * 1024;
+const maxFileSize = 30 * 1024 * 1024;
 
 const multerS3StorageConfig = multerS3({
   s3: new AWS.S3(),
