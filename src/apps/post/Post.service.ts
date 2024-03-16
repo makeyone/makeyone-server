@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import { buildPaginator } from 'typeorm-cursor-pagination';
 
 import { PostEntity } from '@src/libs/entity/domain/post/Post.entity';
 import { PostFoamEntity } from '@src/libs/entity/domain/post/PostFoam.entity';
@@ -52,6 +53,7 @@ import {
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { EditPostVideoInput, EditPostVideoOutput, EditPostVideoParam } from '@src/apps/post/dto/EditPostVideo.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
+import { GetPostsOutput, GetPostsQuery } from '@src/apps/post/dto/GetPosts.dto';
 import { PostFoamQueryRepository } from '@src/apps/post/PostFoamQueryRepository';
 import { PostHousingQueryRepository } from '@src/apps/post/PostHousingQueryRepository';
 import { PostKeyboardDefinitionQueryRepository } from '@src/apps/post/PostKeyboardDefinitionQueryRepository';
@@ -104,6 +106,45 @@ export class PostService {
     private readonly postSettingRepository: Repository<PostSettingEntity>,
     private readonly postSettingQueryRepository: PostSettingQueryRepository,
   ) {}
+
+  async getPosts({ nextCursor, limit }: GetPostsQuery): Promise<GetPostsOutput> {
+    const queryBuilder = this.dataSource
+      .getRepository(PostEntity)
+      .createQueryBuilder('post')
+      .select([
+        'post.id',
+        'post.createdAt',
+        'post.postTitle',
+        'user.id',
+        'user.profileImg',
+        'user.nickname',
+        'image.id',
+        'image.imageUrl',
+      ])
+      .leftJoin('post.postedUser', 'user')
+      .leftJoin('post.postImages', 'image')
+      .leftJoin('post.postSetting', 'setting')
+      .where('setting.isPublished = true');
+    const paginator = buildPaginator({
+      entity: PostEntity,
+      paginationKeys: ['id'],
+      alias: 'post',
+      query: {
+        limit,
+        order: 'DESC',
+        afterCursor: nextCursor,
+      },
+    });
+    const totalResults = await queryBuilder.getCount();
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+
+    return {
+      ok: true,
+      posts: data,
+      cursor,
+      totalResults,
+    };
+  }
 
   async getPostById({ postId }: GetPostByIdParam): Promise<GetPostByIdOutput> {
     const post = await this.postQueryRepository.findPostById(postId);

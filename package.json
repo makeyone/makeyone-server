@@ -53,6 +53,7 @@
     "sharp": "^0.33.2",
     "ts-jenum": "^2.2.2",
     "typeorm": "^0.3.17",
+    "typeorm-cursor-pagination": "^0.10.1",
     "typeorm-naming-strategies": "^4.1.0",
     "winston": "^3.9.0",
     "winston-daily-rotate-file": "^4.7.1"

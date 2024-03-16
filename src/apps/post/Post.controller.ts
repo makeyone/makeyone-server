@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ValidationPipe } from '@nestjs/common';
 
 import { UserEntity } from '@src/libs/entity/domain/user/User.entity';
 
@@ -39,11 +39,17 @@ import {
 import { EditPostTitleInput, EditPostTitleOutput, EditPostTitleParam } from '@src/apps/post/dto/EditPostTitle.dto';
 import { EditPostVideoInput, EditPostVideoOutput, EditPostVideoParam } from '@src/apps/post/dto/EditPostVideo.dto';
 import { GetPostByIdOutput, GetPostByIdParam } from '@src/apps/post/dto/GetPostById.dto';
+import { GetPostsOutput, GetPostsQuery } from '@src/apps/post/dto/GetPosts.dto';
 import { PostService } from '@src/apps/post/Post.service';
 
 @Controller('v1/posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
+
+  @Get('/')
+  async getPosts(@Query(ValidationPipe) getPostsQuery: GetPostsQuery): Promise<GetPostsOutput> {
+    return await this.postService.getPosts(getPostsQuery);
+  }
 
   @Get('/:postId')
   async getPostById(@Param(ValidationPipe) getPostByIdParam: GetPostByIdParam): Promise<GetPostByIdOutput> {
