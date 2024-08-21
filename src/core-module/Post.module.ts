@@ -14,7 +14,7 @@ import { PostVideoRepository } from '@src/database/entity/Post/PostVideo.reposit
 import { UserRepository } from '@src/database/entity/User/User.repository';
 import { TypeormEntityModule } from '@src/database/TypeormEntity.module';
 
-import { PostController } from '@src/core-api/post/controller/Post.controller';
+import { PostController } from '@src/core-api/post/controller/v1/Post.controller';
 
 import { PostCreator } from '@src/core-domain/post/Post.creator';
 import { PostEditor } from '@src/core-domain/post/Post.editor';
