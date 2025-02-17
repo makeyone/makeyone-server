@@ -1,18 +1,24 @@
 import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 
-import { BaseEntity } from '@src/database/entity/Base.entity';
-import { PostEntity } from '@src/database/entity/Post/Post.entity';
-
 import {
   keyboardHousingFunctionKeyLayoutKeys,
   KeyboardHousingFunctionKeyLayoutUnion,
-} from '@src/core-enum/Post/KeyboardHousingFunctionKeyLayout.enum';
-import { keyboardHousingLayoutKeys, KeyboardHousingLayoutUnion } from '@src/core-enum/Post/KeyboardHousingLayout.enum';
-import { keyboardHousingMountKeys, KeyboardHousingMountUnion } from '@src/core-enum/Post/KeyboardHousingMount.enum';
+} from '@src/core/core-enum/Post/KeyboardHousingFunctionKeyLayout.enum';
+import {
+  keyboardHousingLayoutKeys,
+  KeyboardHousingLayoutUnion,
+} from '@src/core/core-enum/Post/KeyboardHousingLayout.enum';
+import {
+  keyboardHousingMountKeys,
+  KeyboardHousingMountUnion,
+} from '@src/core/core-enum/Post/KeyboardHousingMount.enum';
 import {
   keyboardHousingWindowKeyLayoutKeys,
   KeyboardHousingWindowKeyLayoutUnion,
-} from '@src/core-enum/Post/KeyboardHousingWindowKeyLayout.enum';
+} from '@src/core/core-enum/Post/KeyboardHousingWindowKeyLayout.enum';
+
+import { BaseEntity } from '@src/database/entity/Base.entity';
+import { PostEntity } from '@src/database/entity/Post/Post.entity';
 
 @Entity({ name: 'post_housing' })
 @Index('idx_post', ['post'])

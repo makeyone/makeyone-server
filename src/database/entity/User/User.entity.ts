@@ -1,10 +1,10 @@
 import { Column, Entity } from 'typeorm';
 
-import { BaseEntity } from '@src/database/entity/Base.entity';
+import { userGenderKeys, UserGenderUnion } from '@src/core/core-enum/user/UserGender.enum';
+import { userRoleKeys, UserRoleUnion } from '@src/core/core-enum/user/UserRole.enum';
+import { userSocialProviderKeys, UserSocialProviderUnion } from '@src/core/core-enum/user/UserSocialProvider.enum';
 
-import { userGenderKeys, UserGenderUnion } from '@src/core-enum/user/UserGender.enum';
-import { userRoleKeys, UserRoleUnion } from '@src/core-enum/user/UserRole.enum';
-import { userSocialProviderKeys, UserSocialProviderUnion } from '@src/core-enum/user/UserSocialProvider.enum';
+import { BaseEntity } from '@src/database/entity/Base.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity extends BaseEntity {

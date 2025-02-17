@@ -46,27 +46,32 @@ module.exports = {
             "position": "before"
           },
           {
+            "pattern": "@src/core/core-module/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@src/core/core-enum/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@src/core/core-api/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@src/core/core-domain/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@src/core/core-cron/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
             "pattern": "@src/database/**",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@src/core-module/**",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@src/core-enum/**",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@src/core-api/**",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@src/core-domain/**",
             "group": "internal",
             "position": "after"
           },

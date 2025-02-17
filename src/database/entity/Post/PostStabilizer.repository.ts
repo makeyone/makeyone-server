@@ -1,10 +1,10 @@
 import { Repository } from 'typeorm';
 
+import { CreatePostStabilizerData } from '@src/core/core-domain/domain/post/data/CreatePostStabilizerData';
+import { EditPostStabilizerData } from '@src/core/core-domain/domain/post/data/EditPostStabilizerData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostStabilizerEntity } from '@src/database/entity/Post/PostStabilizer.entity';
-
-import { CreatePostStabilizerData } from '@src/core-domain/post/data/CreatePostStabilizerData';
-import { EditPostStabilizerData } from '@src/core-domain/post/data/EditPostStabilizerData';
 
 @CustomRepository(PostStabilizerEntity)
 export class PostStabilizerRepository extends Repository<PostStabilizerEntity> {

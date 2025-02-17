@@ -1,14 +1,14 @@
 import { Repository } from 'typeorm';
 import { buildPaginator, Cursor } from 'typeorm-cursor-pagination';
 
+import { FindPostListData } from '@src/core/core-domain/domain/post/data/FindPostListData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostEntity } from '@src/database/entity/Post/Post.entity';
 
-import { CursorPaginationData } from '@src/core-api/support/request/CursorPaginationData';
-
 @CustomRepository(PostEntity)
 export class PostRepository extends Repository<PostEntity> {
-  async findPostList({ limit, nextCursor }: CursorPaginationData): Promise<{
+  async findPostList({ limit, nextCursor }: FindPostListData): Promise<{
     postList: PostEntity[];
     totalResults: number;
     cursor: Cursor;

@@ -1,10 +1,10 @@
 import { Repository } from 'typeorm';
 
+import { CreatePostKeycapData } from '@src/core/core-domain/domain/post/data/CreatePostKeycapData';
+import { EditPostKeycapData } from '@src/core/core-domain/domain/post/data/EditPostKeycapData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostKeycapEntity } from '@src/database/entity/Post/PostKeycap.entity';
-
-import { CreatePostKeycapData } from '@src/core-domain/post/data/CreatePostKeycapData';
-import { EditPostKeycapData } from '@src/core-domain/post/data/EditPostKeycapData';
 
 @CustomRepository(PostKeycapEntity)
 export class PostKeycapRepository extends Repository<PostKeycapEntity> {

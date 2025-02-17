@@ -1,10 +1,10 @@
 import * as dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 
+import { CreateUserTokenData } from '@src/core/core-domain/domain/user/data/CreateUserTokenData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { UserTokenEntity } from '@src/database/entity/User/UserToken.entity';
-
-import { CreateUserTokenData } from '@src/core-domain/user/data/CreateUserTokenData';
 
 @CustomRepository(UserTokenEntity)
 export class UserTokenRepository extends Repository<UserTokenEntity> {

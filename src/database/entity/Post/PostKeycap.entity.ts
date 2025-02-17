@@ -1,10 +1,16 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
+import {
+  keyboardKeycapProfileKeys,
+  KeyboardKeycapProfileUnion,
+} from '@src/core/core-enum/Post/KeyboardKeycapProfile.enum';
+import {
+  keyboardKeycapTextureKeys,
+  KeyboardKeycapTextureUnion,
+} from '@src/core/core-enum/Post/KeyboardKeycapTexture.enum';
+
 import { BaseEntity } from '@src/database/entity/Base.entity';
 import { PostEntity } from '@src/database/entity/Post/Post.entity';
-
-import { keyboardKeycapProfileKeys, KeyboardKeycapProfileUnion } from '@src/core-enum/Post/KeyboardKeycapProfile.enum';
-import { keyboardKeycapTextureKeys, KeyboardKeycapTextureUnion } from '@src/core-enum/Post/KeyboardKeycapTexture.enum';
 
 @Entity({ name: 'post_keycap' })
 @Index('idx_post', ['post'])

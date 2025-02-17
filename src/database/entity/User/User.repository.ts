@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
 
+import { CreateUserData } from '@src/core/core-domain/domain/user/data/CreateUserData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { UserEntity } from '@src/database/entity/User/User.entity';
-
-import { CreateUserData } from '@src/core-domain/user/data/CreateUserData';
 
 @CustomRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {

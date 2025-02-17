@@ -1,10 +1,10 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
+import { keyboardSwitchLubeKeys, KeyboardSwitchLubeUnion } from '@src/core/core-enum/Post/KeyboardSwitchLube.enum';
+import { keyboardSwitchTypeKeys, KeyboardSwitchTypeUnion } from '@src/core/core-enum/Post/KeyboardSwitchType.enum';
+
 import { BaseEntity } from '@src/database/entity/Base.entity';
 import { PostEntity } from '@src/database/entity/Post/Post.entity';
-
-import { keyboardSwitchLubeKeys, KeyboardSwitchLubeUnion } from '@src/core-enum/Post/KeyboardSwitchLube.enum';
-import { keyboardSwitchTypeKeys, KeyboardSwitchTypeUnion } from '@src/core-enum/Post/KeyboardSwitchType.enum';
 
 @Entity({ name: 'post_switch' })
 @Index('idx_post', ['post'])

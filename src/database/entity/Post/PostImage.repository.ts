@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
 
+import { EditPostImageData } from '@src/core/core-domain/domain/post/data/EditPostImageData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostImageEntity } from '@src/database/entity/Post/PostImage.entity';
-
-import { EditPostImageData } from '@src/core-domain/post/data/EditPostImageData';
 
 @CustomRepository(PostImageEntity)
 export class PostImageRepository extends Repository<PostImageEntity> {

@@ -1,12 +1,12 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
-import { BaseEntity } from '@src/database/entity/Base.entity';
-import { PostEntity } from '@src/database/entity/Post/Post.entity';
-
 import {
   keyboardPrintedCircuitBoardTypeKeys,
   KeyboardPrintedCircuitBoardTypeUnion,
-} from '@src/core-enum/Post/KeyboardPCBType.enum';
+} from '@src/core/core-enum/Post/KeyboardPCBType.enum';
+
+import { BaseEntity } from '@src/database/entity/Base.entity';
+import { PostEntity } from '@src/database/entity/Post/Post.entity';
 
 @Entity({ name: 'post_printed_circuit_board' })
 @Index('idx_post', ['post'])

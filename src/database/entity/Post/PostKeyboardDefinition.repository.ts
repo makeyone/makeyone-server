@@ -1,10 +1,10 @@
 import { Repository } from 'typeorm';
 
+import { EditPostKeyboardDefinitionData } from '@src/core/core-domain/domain/post/data/EditPostKeyboardDefinitionData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostKeyboardDefinitionEntity } from '@src/database/entity/Post/PostKeyboardDefinition.entity';
 import { PostKeyboardDefinitionType } from '@src/database/entity/Post/type/PostKeyboardLayout.type';
-
-import { EditPostKeyboardDefinitionData } from '@src/core-domain/post/data/EditPostKeyboardDefinitionData';
 
 @CustomRepository(PostKeyboardDefinitionEntity)
 export class PostKeyboardDefinitionRepository extends Repository<PostKeyboardDefinitionEntity> {

@@ -1,10 +1,10 @@
 import { Repository } from 'typeorm';
 
+import { CreatePostSwitchData } from '@src/core/core-domain/domain/post/data/CreatePostSwitchData';
+import { EditPostSwitchData } from '@src/core/core-domain/domain/post/data/EditPostSwitchData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostSwitchEntity } from '@src/database/entity/Post/PostSwitch.entity';
-
-import { CreatePostSwitchData } from '@src/core-domain/post/data/CreatePostSwitchData';
-import { EditPostSwitchData } from '@src/core-domain/post/data/EditPostSwitchData';
 
 @CustomRepository(PostSwitchEntity)
 export class PostSwitchRepository extends Repository<PostSwitchEntity> {

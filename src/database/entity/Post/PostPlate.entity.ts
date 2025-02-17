@@ -1,9 +1,12 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
+import {
+  keyboardPlateTextureKeys,
+  KeyboardPlateTextureUnion,
+} from '@src/core/core-enum/Post/KeyboardPlateTexture.enum';
+
 import { BaseEntity } from '@src/database/entity/Base.entity';
 import { PostEntity } from '@src/database/entity/Post/Post.entity';
-
-import { keyboardPlateTextureKeys, KeyboardPlateTextureUnion } from '@src/core-enum/Post/KeyboardPlateTexture.enum';
 
 @Entity({ name: 'post_plate' })
 @Index('idx_post', ['post'])

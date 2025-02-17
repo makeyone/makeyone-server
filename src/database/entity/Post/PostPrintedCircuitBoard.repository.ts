@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
 
+import { EditPostPrintedCircuitBoardData } from '@src/core/core-domain/domain/post/data/EditPostPrintedCircuitBoardData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostPrintedCircuitBoardEntity } from '@src/database/entity/Post/PostPrintedCircuitBoard.entity';
-
-import { EditPostPrintedCircuitBoardData } from '@src/core-domain/post/data/EditPostPrintedCircuitBoardData';
 
 @CustomRepository(PostPrintedCircuitBoardEntity)
 export class PostPrintedCircuitBoardRepository extends Repository<PostPrintedCircuitBoardEntity> {

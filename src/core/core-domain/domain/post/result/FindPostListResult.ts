@@ -1,0 +1,18 @@
+import { FindPostImageResult } from '@src/core/core-domain/domain/post/result/FindPostImageResult';
+import { FindPostResult } from '@src/core/core-domain/domain/post/result/FindPostResult';
+import { FindUserResult } from '@src/core/core-domain/domain/user/result/FindUserResult';
+
+export class FindPostListResult {
+  constructor(
+    readonly id: number,
+    readonly createdAt: Date,
+    readonly isPublished: boolean,
+    readonly postTitle: string,
+    readonly postedUser: Pick<FindUserResult, 'id' | 'nickname' | 'profileImg'>,
+    readonly postImages: FindPostImageResult[],
+  ) {}
+
+  static of(post: FindPostResult, images: FindPostImageResult[]): FindPostListResult {
+    return new FindPostListResult(post.id, post.createdAt, post.isPublished, post.postTitle, post.postedUser, images);
+  }
+}

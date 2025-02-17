@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
 
+import { EditPostVideoData } from '@src/core/core-domain/domain/post/data/EditPostVideoData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostVideoEntity } from '@src/database/entity/Post/PostVideo.entity';
-
-import { EditPostVideoData } from '@src/core-domain/post/data/EditPostVideoData';
 
 @CustomRepository(PostVideoEntity)
 export class PostVideoRepository extends Repository<PostVideoEntity> {

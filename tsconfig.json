@@ -19,20 +19,23 @@
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
     "paths": {
+      "@src/core/core-module/*": [
+        "src/core/core-module/*"
+      ],
+      "@src/core/core-enum/*": [
+        "src/core/core-enum/*"
+      ],
+      "@src/core/core-api/*": [
+        "src/core/core-api/*"
+      ],
+      "@src/core/core-domain/*": [
+        "src/core/core-domain/*"
+      ],
+      "@src/core/core-cron/*": [
+        "src/core/core-cron/*"
+      ],
       "@src/database/*": [
         "src/database/*"
-      ],
-      "@src/core-module/*": [
-        "src/core-module/*"
-      ],
-      "@src/core-enum/*": [
-        "src/core-enum/*"
-      ],
-      "@src/core-api/*": [
-        "src/core-api/*"
-      ],
-      "@src/core-domain/*": [
-        "src/core-domain/*"
       ],
       "@src/support/*": [
         "src/support/*"

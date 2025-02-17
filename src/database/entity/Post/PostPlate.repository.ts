@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
 
+import { EditPostPlateData } from '@src/core/core-domain/domain/post/data/EditPostPlateData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostPlateEntity } from '@src/database/entity/Post/PostPlate.entity';
-
-import { EditPostPlateData } from '@src/core-domain/post/data/EditPostPlateData';
 
 @CustomRepository(PostPlateEntity)
 export class PostPlateRepository extends Repository<PostPlateEntity> {

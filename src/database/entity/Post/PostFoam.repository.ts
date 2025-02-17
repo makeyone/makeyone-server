@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
 
+import { EditPostFoamData } from '@src/core/core-domain/domain/post/data/EditPostFoamData';
+
 import { CustomRepository } from '@src/database/decorator/TypeOrmCustomRepository.decorator';
 import { PostFoamEntity } from '@src/database/entity/Post/PostFoam.entity';
-
-import { EditPostFoamData } from '@src/core-domain/post/data/EditPostFoamData';
 
 @CustomRepository(PostFoamEntity)
 export class PostFoamRepository extends Repository<PostFoamEntity> {
