@@ -1,3 +1,3 @@
 export class AwsS3CopyObjectData {
-  constructor(readonly fileKey: string, readonly fileName: string, readonly directory: string) {}
+  constructor(readonly copyFileKey: string, readonly newFileKey: string, readonly path: string) {}
 }

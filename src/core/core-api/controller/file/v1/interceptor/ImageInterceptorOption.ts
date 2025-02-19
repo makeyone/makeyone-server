@@ -44,7 +44,7 @@ const fileFilterConfig =
   };
 
 const imageUploadOptions: MulterOptions = {
-  fileFilter: fileFilterConfig(/\/(jpg|jpeg|png|gif)$/),
+  fileFilter: fileFilterConfig(/\/(jpg|jpeg|png|gif|webp)$/),
   limits: {
     fileSize: 10 * 1024 * 1024,
     files: 10,
