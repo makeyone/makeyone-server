@@ -45,6 +45,47 @@ export class PostRepository extends Repository<PostEntity> {
     };
   }
 
+  async findMyPostList(
+    userId: number,
+    { limit, nextCursor }: FindPostListData,
+  ): Promise<{
+    postList: PostEntity[];
+    totalResults: number;
+    cursor: Cursor;
+  }> {
+    const queryBuilder = this.createQueryBuilder('post')
+      .select([
+        'post.id',
+        'post.createdAt',
+        'post.isPublished',
+        'post.postTitle',
+        'user.id',
+        'user.profileImg',
+        'user.nickname',
+      ])
+      .leftJoin('post.postedUser', 'user')
+      .where('post.isPublished = true')
+      .andWhere('user.id = :userId', { userId });
+    const paginator = buildPaginator({
+      entity: PostEntity,
+      paginationKeys: ['id'],
+      alias: 'post',
+      query: {
+        limit,
+        order: 'DESC',
+        afterCursor: nextCursor,
+      },
+    });
+    const totalResults = await queryBuilder.getCount();
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+
+    return {
+      postList: data,
+      totalResults,
+      cursor,
+    };
+  }
+
   async findPostById(postId: number): Promise<PostEntity> {
     const row = await this.createQueryBuilder('post')
       .select([

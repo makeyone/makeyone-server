@@ -34,6 +34,29 @@ export class PostReader {
     };
   }
 
+  async findMyPostList(
+    userId: number,
+    findPostListData: FindPostListData,
+  ): Promise<{
+    postList: FindPostListResult[];
+    totalResults: number;
+    cursor: Cursor;
+  }> {
+    const { postList, totalResults, cursor } = await this.postRepository.findMyPostList(userId, findPostListData);
+    const postListResult: FindPostListResult[] = [];
+    for (const post of postList) {
+      const image = await this.postImageReader.findPostImageList(post.id);
+      const postResult = FindPostListResult.of(plainToInstance(FindPostResult, post), image);
+      postListResult.push(postResult);
+    }
+
+    return {
+      postList: postListResult,
+      totalResults,
+      cursor,
+    };
+  }
+
   async findPost(postId: number): Promise<FindPostResult> {
     const post = await this.postRepository.findPostById(postId);
     if (!post) {

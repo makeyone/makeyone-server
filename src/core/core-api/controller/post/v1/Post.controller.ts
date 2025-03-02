@@ -59,6 +59,7 @@ import {
   EditPostVideoParam,
   EditPostVideoReq,
 } from '@src/core/core-api/controller/post/v1/request/EditPostVideoReq.dto';
+import { FindMyPostListQuery } from '@src/core/core-api/controller/post/v1/request/FindMyPostListReq.dto';
 import { FindPostListQuery } from '@src/core/core-api/controller/post/v1/request/FindPostListReq.dto';
 import { FindPostParam } from '@src/core/core-api/controller/post/v1/request/FindPostReq.dto';
 import { CreatePostRes } from '@src/core/core-api/controller/post/v1/response/CreatePostRes.dto';
@@ -79,6 +80,7 @@ import { EditPostSwitchListRes } from '@src/core/core-api/controller/post/v1/res
 import { EditPostSwitchOnLayoutRes } from '@src/core/core-api/controller/post/v1/response/EditPostSwitchOnLayoutRes.dto';
 import { EditPostTitleRes } from '@src/core/core-api/controller/post/v1/response/EditPostTitleRes.dto';
 import { EditPostVideoRes } from '@src/core/core-api/controller/post/v1/response/EditPostVideoRes.dto';
+import { FindMyPostListRes } from '@src/core/core-api/controller/post/v1/response/FindMyPostListRes.dto';
 import { FindPostListRes } from '@src/core/core-api/controller/post/v1/response/FindPostListRes.dto';
 import { FindPostRes } from '@src/core/core-api/controller/post/v1/response/FindPostRes.dto';
 import { AuthUser } from '@src/core/core-api/decorator/auth/AuthUser.decorator';
@@ -118,8 +120,22 @@ export class PostController {
   @Get('/v1/posts')
   async findPostList(@Query() query: FindPostListQuery): Promise<ApiResponse<FindPostListRes>> {
     const foundPost = await this.postService.findPostList(query.toFindPostListData());
+
     return ApiResponse.successWithData(
       FindPostListRes.of(foundPost.postList, foundPost.totalResults, foundPost.cursor),
+    );
+  }
+
+  @RoleGuard(['ANY'])
+  @Get('/v1/posts/me')
+  async findMyPostList(
+    @AuthUser() authUser: FindUserResult,
+    @Query() query: FindMyPostListQuery,
+  ): Promise<ApiResponse<FindMyPostListRes>> {
+    const foundPost = await this.postService.findMyPostList(authUser.id, query.toFindPostListData());
+
+    return ApiResponse.successWithData(
+      FindMyPostListRes.of(foundPost.postList, foundPost.totalResults, foundPost.cursor),
     );
   }
 

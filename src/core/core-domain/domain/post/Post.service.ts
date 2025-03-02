@@ -32,6 +32,19 @@ export class PostService {
     return { postList, totalResults, cursor };
   }
 
+  async findMyPostList(
+    userId: number,
+    findPostListData: FindPostListData,
+  ): Promise<{
+    postList: FindPostListResult[];
+    totalResults: number;
+    cursor: Cursor;
+  }> {
+    const { postList, totalResults, cursor } = await this.postReader.findMyPostList(userId, findPostListData);
+
+    return { postList, totalResults, cursor };
+  }
+
   async findPost(postId: number): Promise<FindPostResult> {
     const post = await this.postReader.findPost(postId);
     return post;
