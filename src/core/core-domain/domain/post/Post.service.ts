@@ -82,4 +82,9 @@ export class PostService {
     await this.postEditor.editPostSetting(targetPostId, isPublished);
     return targetPostId;
   }
+
+  async deletePost(targetPostId: number): Promise<number> {
+    await this.postRemover.deletePost(targetPostId);
+    return targetPostId;
+  }
 }

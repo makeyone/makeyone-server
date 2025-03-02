@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 
 import { DeletePostPlateParam } from '@src/core/core-api/controller/post/v1/request/DeletePostPlateReq.dto';
+import { DeletePostParam } from '@src/core/core-api/controller/post/v1/request/DeletePostReq.dto';
 import { DeletePostVideoParam } from '@src/core/core-api/controller/post/v1/request/DeletePostVideoReq.dto';
 import {
   EditPostContentParam,
@@ -64,6 +65,7 @@ import { FindPostListQuery } from '@src/core/core-api/controller/post/v1/request
 import { FindPostParam } from '@src/core/core-api/controller/post/v1/request/FindPostReq.dto';
 import { CreatePostRes } from '@src/core/core-api/controller/post/v1/response/CreatePostRes.dto';
 import { DeletePostPlateRes } from '@src/core/core-api/controller/post/v1/response/DeletePostPlateRes.dto';
+import { DeletePostRes } from '@src/core/core-api/controller/post/v1/response/DeletePostRes.dto';
 import { DeletePostVideoRes } from '@src/core/core-api/controller/post/v1/response/DeletePostVideoRes.dto';
 import { EditPostContentRes } from '@src/core/core-api/controller/post/v1/response/EditPostContentRes.dto';
 import { EditPostFoamRes } from '@src/core/core-api/controller/post/v1/response/EditPostFoamRes.dto';
@@ -412,5 +414,17 @@ export class PostController {
 
     const editedPostId = await this.postService.editPostSetting(postId, request.toEditPostSetting());
     return ApiResponse.successWithData(EditPostSettingRes.of(editedPostId));
+  }
+
+  @RoleGuard(['ANY'])
+  @Delete('/v1/posts/:postId')
+  async deletePost(
+    @AuthUser() authUser: FindUserResult,
+    @Param() { postId }: DeletePostParam,
+  ): Promise<ApiResponse<DeletePostRes>> {
+    await this.postService.validateMyPostIfNotAdmin(TargetPostWithUserData.toTargetPostWithUser(postId, authUser));
+
+    const deletedPostId = await this.postService.deletePost(postId);
+    return ApiResponse.successWithData(DeletePostRes.of(deletedPostId));
   }
 }

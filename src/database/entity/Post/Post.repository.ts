@@ -121,4 +121,8 @@ export class PostRepository extends Repository<PostEntity> {
   async editPostSetting(targetPostId: number, isPublished: boolean): Promise<void> {
     await this.update(targetPostId, { isPublished });
   }
+
+  async deletePost(targetPostId: number): Promise<void> {
+    await this.softDelete(targetPostId);
+  }
 }
