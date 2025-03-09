@@ -12,8 +12,10 @@ import { JwtSetter } from '@src/core/core-domain/domain/jwt/Jwt.setter';
 import { JwtSign } from '@src/core/core-domain/domain/jwt/Jwt.sign';
 import { JwtVerify } from '@src/core/core-domain/domain/jwt/Jwt.verify';
 import { UserCreator } from '@src/core/core-domain/domain/user/User.creator';
+import { UserEditor } from '@src/core/core-domain/domain/user/User.editor';
 import { UserReader } from '@src/core/core-domain/domain/user/User.reader';
 import { UserService } from '@src/core/core-domain/domain/user/User.service';
+import { UserValidator } from '@src/core/core-domain/domain/user/User.validator';
 import { UserTokenCreator } from '@src/core/core-domain/domain/user/UserToken.creator';
 import { UserTokenReader } from '@src/core/core-domain/domain/user/UserToken.reader';
 import { UserTokenRemover } from '@src/core/core-domain/domain/user/UserToken.remover';
@@ -39,6 +41,8 @@ import { TypeormEntityModule } from '@src/database/TypeormEntity.module';
     UserTokenReader,
     UserReader,
     UserCreator,
+    UserValidator,
+    UserEditor,
     UserTokenCreator,
     UserTokenVerify,
     UserTokenRemover,

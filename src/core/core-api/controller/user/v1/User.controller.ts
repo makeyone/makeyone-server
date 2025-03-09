@@ -1,6 +1,8 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 
+import { EditUserParam, EditUserReq } from '@src/core/core-api/controller/user/v1/request/EditUserReq.dto';
 import { FindUserByIdParam } from '@src/core/core-api/controller/user/v1/request/FindUserByIdReq.dto';
+import { EditUserRes } from '@src/core/core-api/controller/user/v1/response/EditUserRes.dto';
 import { FindMeRes } from '@src/core/core-api/controller/user/v1/response/FindMeRes.dto';
 import { FindUserByIdRes } from '@src/core/core-api/controller/user/v1/response/FindUserByIdRes.dto';
 import { AuthUser } from '@src/core/core-api/decorator/auth/AuthUser.decorator';
@@ -27,5 +29,16 @@ export class UserController {
   async findUserById(@Param() { userId }: FindUserByIdParam): Promise<ApiResponse<FindUserByIdRes>> {
     const result = await this.userService.findUserById(userId);
     return ApiResponse.successWithData(FindUserByIdRes.of(result));
+  }
+
+  @RoleGuard(['ANY'])
+  @Patch('/v1/users/:userId')
+  async editUser(
+    @AuthUser() authUser: FindUserResult,
+    @Param() { userId }: EditUserParam,
+    @Body() request: EditUserReq,
+  ): Promise<ApiResponse<EditUserRes>> {
+    const result = await this.userService.editUser(authUser.id, authUser.role, request.toEditUserData(userId));
+    return ApiResponse.successWithData(EditUserRes.of(result));
   }
 }

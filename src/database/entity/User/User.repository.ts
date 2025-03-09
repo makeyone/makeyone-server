@@ -31,4 +31,14 @@ export class UserRepository extends Repository<UserEntity> {
     });
     return row;
   }
+
+  async editUserNickname(targetUserId: number, nickname: string): Promise<UserEntity> {
+    const row = await this.save({ id: targetUserId, nickname });
+    return row;
+  }
+
+  async editUserProfileImgUrl(targetUserId: number, profileImgUrl: string): Promise<UserEntity> {
+    const row = await this.save({ id: targetUserId, profileImg: profileImgUrl });
+    return row;
+  }
 }
