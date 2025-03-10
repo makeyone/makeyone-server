@@ -82,10 +82,10 @@ export class AwsS3Processor {
     let buffer: Buffer;
 
     if (imageUrl) {
-      buffer = await this.fileGenerator.generateInitialProfileImage(nickname);
-      // const response = await fetch(imageUrl);
-      // buffer = Buffer.from(await response.arrayBuffer());
+      const response = await fetch(imageUrl);
+      buffer = Buffer.from(await response.arrayBuffer());
     } else {
+      buffer = await this.fileGenerator.generateInitialProfileImage(nickname);
     }
 
     const env = process.env.NODE_ENV === 'prod' ? 'production' : 'development';
