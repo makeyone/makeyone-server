@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm';
+import { Column, DeleteDateColumn, Entity } from 'typeorm';
 
 import { userGenderKeys, UserGenderUnion } from '@src/core/core-enum/user/UserGender.enum';
 import { userRoleKeys, UserRoleUnion } from '@src/core/core-enum/user/UserRole.enum';
@@ -77,4 +77,7 @@ export class UserEntity extends BaseEntity {
     nullable: true,
   })
   birthyear: string | null;
+
+  @DeleteDateColumn()
+  withdrawalAt: Date | null;
 }

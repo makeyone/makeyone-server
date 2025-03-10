@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 
 import { EditUserParam, EditUserReq } from '@src/core/core-api/controller/user/v1/request/EditUserReq.dto';
 import { FindUserByIdParam } from '@src/core/core-api/controller/user/v1/request/FindUserByIdReq.dto';
+import { WithdrawalUserParam } from '@src/core/core-api/controller/user/v1/request/WithdrawalUserReq.dto';
 import { EditUserRes } from '@src/core/core-api/controller/user/v1/response/EditUserRes.dto';
 import { FindMeRes } from '@src/core/core-api/controller/user/v1/response/FindMeRes.dto';
 import { FindUserByIdRes } from '@src/core/core-api/controller/user/v1/response/FindUserByIdRes.dto';
+import { WithdrawalUserRes } from '@src/core/core-api/controller/user/v1/response/WithdrawalUserRes.dto';
 import { AuthUser } from '@src/core/core-api/decorator/auth/AuthUser.decorator';
 import { RoleGuard } from '@src/core/core-api/decorator/auth/RoleGuard.decorator';
 import { ApiResponse } from '@src/core/core-api/support/response/ApiResponse';
@@ -40,5 +42,15 @@ export class UserController {
   ): Promise<ApiResponse<EditUserRes>> {
     const result = await this.userService.editUser(authUser.id, authUser.role, request.toEditUserData(userId));
     return ApiResponse.successWithData(EditUserRes.of(result));
+  }
+
+  @RoleGuard(['ANY'])
+  @Delete('/v1/users/:userId')
+  async withdrawalUser(
+    @AuthUser() authUser: FindUserResult,
+    @Param() { userId: withdrawalUserId }: WithdrawalUserParam,
+  ): Promise<ApiResponse<WithdrawalUserRes>> {
+    const result = await this.userService.withdrawal(authUser.id, authUser.role, withdrawalUserId);
+    return ApiResponse.successWithData(WithdrawalUserRes.of(result));
   }
 }

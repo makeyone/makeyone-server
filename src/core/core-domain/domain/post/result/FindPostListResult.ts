@@ -8,7 +8,7 @@ export class FindPostListResult {
     readonly createdAt: Date,
     readonly isPublished: boolean,
     readonly postTitle: string,
-    readonly postedUser: Pick<FindUserResult, 'id' | 'nickname' | 'profileImg'>,
+    readonly postedUser: Pick<FindUserResult, 'id' | 'nickname' | 'profileImg'> | null,
     readonly postImages: FindPostImageResult[],
   ) {}
 

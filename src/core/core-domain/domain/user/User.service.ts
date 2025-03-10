@@ -6,6 +6,7 @@ import { EditUserData } from '@src/core/core-domain/domain/user/data/EditUserDat
 import { FindUserResult } from '@src/core/core-domain/domain/user/result/FindUserResult';
 import { UserEditor } from '@src/core/core-domain/domain/user/User.editor';
 import { UserReader } from '@src/core/core-domain/domain/user/User.reader';
+import { UserRemover } from '@src/core/core-domain/domain/user/User.remover';
 import { UserValidator } from '@src/core/core-domain/domain/user/User.validator';
 import { CoreErrorType } from '@src/core/core-domain/support/error/CoreErrorType';
 
@@ -15,6 +16,7 @@ export class UserService {
     private readonly userReader: UserReader,
     private readonly userValidator: UserValidator,
     private readonly userEditor: UserEditor,
+    private readonly userRemover: UserRemover,
   ) {}
 
   async findUserById(userId: number): Promise<FindUserResult> {
@@ -43,5 +45,12 @@ export class UserService {
 
     const editedUser = await this.userReader.findUserById(editUserId);
     return editedUser;
+  }
+
+  async withdrawal(myUserId: number, myUserRole: UserRoleUnion, withdrawalUserId: number): Promise<number> {
+    await this.userValidator.validateUserIfNotAdmin({ myUserId, myUserRole, targetUserId: withdrawalUserId });
+    await this.userRemover.withdrawal(withdrawalUserId);
+
+    return withdrawalUserId;
   }
 }

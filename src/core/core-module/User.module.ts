@@ -5,6 +5,7 @@ import { UserController } from '@src/core/core-api/controller/user/v1/User.contr
 import { UserCreator } from '@src/core/core-domain/domain/user/User.creator';
 import { UserEditor } from '@src/core/core-domain/domain/user/User.editor';
 import { UserReader } from '@src/core/core-domain/domain/user/User.reader';
+import { UserRemover } from '@src/core/core-domain/domain/user/User.remover';
 import { UserService } from '@src/core/core-domain/domain/user/User.service';
 import { UserValidator } from '@src/core/core-domain/domain/user/User.validator';
 
@@ -15,6 +16,6 @@ import { TypeormEntityModule } from '@src/database/TypeormEntity.module';
 @Module({
   imports: [TypeormEntityModule.forCustomRepository([UserRepository, UserTokenRepository])],
   controllers: [UserController],
-  providers: [UserService, UserReader, UserCreator, UserValidator, UserEditor],
+  providers: [UserService, UserReader, UserCreator, UserValidator, UserEditor, UserRemover],
 })
 export class UserModule {}

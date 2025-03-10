@@ -13,7 +13,7 @@ export class FindPostListRes {
       createdAt: Date;
       isPublished: boolean;
       postTitle: string;
-      postedUser: Pick<FindUserResult, 'id' | 'nickname' | 'profileImg'>;
+      postedUser: Pick<FindUserResult, 'id' | 'nickname' | 'profileImg'> | null;
       postImages: FindPostImageResult[];
     }>,
   ) {}

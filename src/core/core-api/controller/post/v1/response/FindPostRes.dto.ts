@@ -18,7 +18,7 @@ export class FindPostRes {
     readonly isPublished: boolean,
     readonly postTitle: string | null,
     readonly postContent: string | null,
-    readonly postedUser: Pick<FindUserResult, 'id' | 'nickname' | 'profileImg'>,
+    readonly postedUser: Pick<FindUserResult, 'id' | 'nickname' | 'profileImg'> | null,
     readonly postImages: FindPostImageResult[],
     readonly postHousing: FindPostHousingResult | null,
     readonly postSwitches: FindPostSwitchResult[],

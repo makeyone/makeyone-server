@@ -41,4 +41,8 @@ export class UserRepository extends Repository<UserEntity> {
     const row = await this.save({ id: targetUserId, profileImg: profileImgUrl });
     return row;
   }
+
+  async withdrawal(targetUserId: number): Promise<void> {
+    await this.softDelete(targetUserId);
+  }
 }
