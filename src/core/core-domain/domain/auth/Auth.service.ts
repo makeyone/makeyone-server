@@ -9,6 +9,7 @@ import { UserSocialProviderUnion } from '@src/core/core-enum/user/UserSocialProv
 import { AuthProcessor } from '@src/core/core-domain/domain/auth/Auth.processor';
 import { SocialSignInData } from '@src/core/core-domain/domain/auth/data/SocialSignInData';
 import { SignInUserResult } from '@src/core/core-domain/domain/auth/result/SignInUserResult';
+import { AwsS3Processor } from '@src/core/core-domain/domain/file/AwsS3.processor';
 import { JwtRemover } from '@src/core/core-domain/domain/jwt/Jwt.remover';
 import { JwtSetter } from '@src/core/core-domain/domain/jwt/Jwt.setter';
 import { JwtSign } from '@src/core/core-domain/domain/jwt/Jwt.sign';
@@ -19,7 +20,6 @@ import { FindUserResult } from '@src/core/core-domain/domain/user/result/FindUse
 import { UserCreator } from '@src/core/core-domain/domain/user/User.creator';
 import { UserReader } from '@src/core/core-domain/domain/user/User.reader';
 import { UserTokenCreator } from '@src/core/core-domain/domain/user/UserToken.creator';
-import { UserTokenReader } from '@src/core/core-domain/domain/user/UserToken.reader';
 import { UserTokenRemover } from '@src/core/core-domain/domain/user/UserToken.remover';
 import { UserTokenVerify } from '@src/core/core-domain/domain/user/UserToken.verify';
 import { CoreErrorType } from '@src/core/core-domain/support/error/CoreErrorType';
@@ -30,7 +30,6 @@ export class AuthService {
     private readonly authProcessor: AuthProcessor,
     private readonly userReader: UserReader,
     private readonly userCreator: UserCreator,
-    private readonly userTokenReader: UserTokenReader,
     private readonly userTokenCreator: UserTokenCreator,
     private readonly userTokenVerify: UserTokenVerify,
     private readonly userTokenRemover: UserTokenRemover,
@@ -38,6 +37,7 @@ export class AuthService {
     private readonly jwtSetter: JwtSetter,
     private readonly jwtVerify: JwtVerify,
     private readonly jwtRemover: JwtRemover,
+    private readonly awsS3Processor: AwsS3Processor,
   ) {}
 
   @Transactional()
@@ -61,12 +61,24 @@ export class AuthService {
     }
 
     if (!user) {
+      const uploadedProfileImg = await this.awsS3Processor.uploadProfileImage(
+        socialSignInUser.profileImg,
+        socialSignInUser.nickname,
+      );
+
       const toCreateUser = plainToInstance(CreateUserData, {
         email: email,
         socialProvider: socialProvider,
-        ...socialSignInUser,
+        socialProviderId: socialSignInUser.socialProviderId,
+        nickname: socialSignInUser.nickname,
+        profileImg: uploadedProfileImg,
+        gender: socialSignInUser.gender,
+        age: socialSignInUser.age,
+        birthday: socialSignInUser.birthday,
+        birthyear: socialSignInUser.birthyear,
       });
       const createdUser = await this.userCreator.createUser(toCreateUser);
+
       user = plainToInstance(FindUserResult, createdUser);
     }
 

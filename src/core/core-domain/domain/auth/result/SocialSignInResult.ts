@@ -4,7 +4,7 @@ export class SocialSignInResult {
   constructor(
     readonly socialProviderId: string,
     readonly nickname: string,
-    readonly profileImg: string,
+    readonly profileImg: string | null,
     readonly gender: UserGenderUnion | null,
     readonly age: string | null,
     readonly birthday: string | null,

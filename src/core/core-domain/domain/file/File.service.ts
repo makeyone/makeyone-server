@@ -16,7 +16,7 @@ export class FileService {
   async uploadImageList(uploadData: UploadImageListData): Promise<UploadImageResult[]> {
     const { fileList, uploadPath } = uploadData;
 
-    const moveLocation = `${uploadPath}`;
+    const moveLocation = `${this.options.awsS3GalleryUploadFolder}/${uploadPath}`;
 
     const images: UploadImageResult[] = [];
     for (const file of fileList) {

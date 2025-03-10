@@ -5,6 +5,7 @@ import { FILE_CONFIG_OPTIONS, FileModuleOptions } from '@src/core/core-module/Fi
 import { FileController } from '@src/core/core-api/controller/file/v1/File.controller';
 
 import { AwsS3Processor } from '@src/core/core-domain/domain/file/AwsS3.processor';
+import { FileGenerator } from '@src/core/core-domain/domain/file/File.generator';
 import { FileProcessor } from '@src/core/core-domain/domain/file/File.processor';
 import { FileService } from '@src/core/core-domain/domain/file/File.service';
 
@@ -23,6 +24,7 @@ export class FileModule {
         FileService,
         FileProcessor,
         AwsS3Processor,
+        FileGenerator,
       ],
     };
   }
