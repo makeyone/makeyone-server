@@ -70,6 +70,10 @@ export class AuthService {
       user = plainToInstance(FindUserResult, createdUser);
     }
 
+    if (user.isActive === false) {
+      throw new UnauthorizedException(CoreErrorType.NOT_ACTIVED_USER);
+    }
+
     const signedAccessToken = this.jwtSign.userAccessToken(user.id);
     const signedRefreshToken = this.jwtSign.userRefreshToken(user.id);
     const signedRefreshTokenExp = dayjs()

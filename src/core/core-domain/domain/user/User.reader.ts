@@ -42,7 +42,7 @@ export class UserReader {
     return plainToInstance(FindUserResult, user);
   }
 
-  async findUserByEmail(email: string): Promise<FindUserResult> {
+  async findUserByEmail(email: string): Promise<FindUserResult | null> {
     const user = await this.userRepository.findUserByEmail(email);
     if (!user) {
       return null;
