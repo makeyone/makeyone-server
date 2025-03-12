@@ -64,8 +64,7 @@ export class PostRepository extends Repository<PostEntity> {
         'user.nickname',
       ])
       .leftJoin('post.postedUser', 'user')
-      .where('post.isPublished = true')
-      .andWhere('user.id = :userId', { userId });
+      .where('user.id = :userId', { userId });
     const paginator = buildPaginator({
       entity: PostEntity,
       paginationKeys: ['id'],
