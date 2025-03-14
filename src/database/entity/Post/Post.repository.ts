@@ -27,7 +27,7 @@ export class PostRepository extends Repository<PostEntity> {
       .where('post.isPublished = true');
     const paginator = buildPaginator({
       entity: PostEntity,
-      paginationKeys: ['id'],
+      paginationKeys: ['createdAt', 'id'],
       alias: 'post',
       query: {
         limit,
@@ -67,7 +67,7 @@ export class PostRepository extends Repository<PostEntity> {
       .where('user.id = :userId', { userId });
     const paginator = buildPaginator({
       entity: PostEntity,
-      paginationKeys: ['id'],
+      paginationKeys: ['createdAt', 'id'],
       alias: 'post',
       query: {
         limit,
